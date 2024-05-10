@@ -9,7 +9,7 @@
 #include <pthread.h>
 
 #include "util.hh"
-/* boolean */
+/* boolean */ // aaaa
 #define TRUE 1
 #define FALSE 0
 #define SEC_IN_STATE 1
