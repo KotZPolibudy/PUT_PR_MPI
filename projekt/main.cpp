@@ -28,13 +28,13 @@ bool run_program = true;
 bool is_in_saloon = false;
 
 // Vector with requests - requests to access to find partner critical section
-std::vector<Request> partner_queue;
+std::vector<Message> partner_queue;
 // Vector with requests to access saloon's critical section
-std::vector<Request> saloon_queue;
+std::vector<Message> saloon_queue;
 // List of houseIDs to return
 std::vector<int> houses_to_return_list;
 // Array with lists of requests to all houses
-std::vector<Request> *houses_vec;
+std::vector<Message> *houses_vec;
 
 // Mutex - clock
 pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;
