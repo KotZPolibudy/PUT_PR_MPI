@@ -66,7 +66,7 @@ void tick(int new_time = 0) {
 }
 
 
-/* Typy wiadomości */ // stare
+/* Typy wiadomości */ //
 #define APP_PKT 1
 #define FINISH 2
 

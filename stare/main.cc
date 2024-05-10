@@ -46,13 +46,10 @@ void check_thread_support(int provided)
 int main(int argc, char **argv)
 {
     MPI_Status status;
-    int provided;
+    int provided, rank, size;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
     // srand(rank);
-    // TODO - tymczasowo
-    int rank = 1;
-    int size = 8;
     inicjuj_typ_pakietu(); // tworzy typ pakietu
     packet_t pkt;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
