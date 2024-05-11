@@ -44,6 +44,7 @@ struct Message {
     Message(int t, int p) {
         time = t;
         pid = p;
+        str = "";
     }
 
   /*

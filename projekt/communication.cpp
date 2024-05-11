@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "communication.h"
+#include "utils.h
 
 /*
  * Mutex assigned to Lamport clock.
@@ -93,7 +94,7 @@ void receive(int &clock, int data[], MPI_Status &status, int tag, int receiverID
  * @param int senderID - ID of sender process
  */
 void broadcast(int &clock, int message, int extra_message, int tag, int world_size, int senderID) {
-  // Loop to send message to another monitors
+  // Loop to send message to another
   for(int i = 0; i < world_size; i++) {
     // Skip send to self project
     if(i != senderID) {
@@ -101,3 +102,4 @@ void broadcast(int &clock, int message, int extra_message, int tag, int world_si
     }
   }
 }
+
