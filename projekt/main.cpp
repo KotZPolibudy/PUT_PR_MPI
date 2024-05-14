@@ -221,6 +221,17 @@ void init_variables(){
     // todo
 }
 
+// WAŻNE! MUSI BYĆ OBŁOŻONE MUTEXAMI
+void remove_from_friendship_queue(int senderID) {
+    for (size_t i = 0; i < partner_queue.size(); i++) {
+        if (partner_queue[i].pid == senderID) {
+            partner_queue.erase(partner_queue.begin() + i);
+            break;
+        }
+    }
+}
+
+
 // Need someone to kill or get killed
 void want_partner() {
     Message temp = Message(lamport_clock, myPID);
@@ -246,9 +257,15 @@ void want_partner() {
     bool didnt_get_role_yet = true;
     if(my_pos % 2 == 1){
         didnt_get_role_yet = false;
+        pthread_mutex_lock(&partner_mutex);
+        partnerID = partner_queue[my_pos-1].pid;
+        remove_from_friendship_queue(myPID);
+        remove_from_friendship_queue(partnerID);
+        pthread_mutex_unlock(&partner_mutex);
         killer = generateRandomBoolean();
         //todo send other role to the process number at my_pos-1 in partner_queue
-        //todo delete self and partner from partner queue
+        //delete self and partner from partner queue
+
 
 
     }
@@ -271,6 +288,11 @@ void want_partner() {
         printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", lamport_clock,
                myPID, iteration, partnerID);
     }
+}
+
+
+void do_nothing_basically(){
+    //todo change status to FINISHED
 }
 
 
