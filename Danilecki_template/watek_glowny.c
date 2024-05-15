@@ -27,7 +27,7 @@ int result;
 int shots_fired = 0;
 int prey_not_responded = 1;
 int ile_requestow_po_pistolet = 0;
-
+int* kolejka_do_odpowiedzi_na_pistolet;
 
 // Paring
 int waiting = -1;
@@ -81,10 +81,9 @@ void release_pistol(){
 
 void get_pistol(){
     changeState(Pistol_Requested);
-    packet_t reqqq;
-    packet_t *req = malloc(sizeof(packet_t));
-    reqqq -> data = 0;
-    broadcast(reqqq, PISTOL_REQ); //todo broadcast dostał kolejke, trzeba by coś podać w ten argument
+    packet_t *reqqq = malloc(sizeof(packet_t));
+    reqqq->data = 0;
+    broadcast2(reqqq, PISTOL_REQ); //todo broadcast dostał kolejke, trzeba by coś podać w ten argument
     while(pistolREQ_res < size - P){ //todo check the math, czy nie jakies +1 albo -1
         usleep(1000);
     }
@@ -131,9 +130,10 @@ void mainLoop()
     srandom(rank);
     int tag;
     pairing_queue = create_queue();
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
-    int kolejka_do_odpowiedzi_na_pistolet[size]; //todo ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloca bo jak to zadziała to tylko przypadkiem
+    //MPI_Comm_size(MPI_COMM_WORLD, &size);
+    //MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
+    // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloca bo jak to zadziała to tylko przypadkiem
+    kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
     for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
 
     while (stan != InFinish) {
@@ -190,4 +190,5 @@ void mainLoop()
         }
         // podsumowanie cyklu
     }
+    free(kolejka_do_odpowiedzi_na_pistolet);
 }

@@ -29,4 +29,6 @@ void tick_Lamport_clock();
 
 void broadcast(Queue* q, packet_t *pkt, int tag);
 
+void broadcast2(packet_t *pkt, int tag);
+
 #endif
