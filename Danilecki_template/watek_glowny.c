@@ -72,7 +72,6 @@ void Release_pistol(){
 
 void get_pistol(){
     changeState(Pistol_Requested);
-    //todo broadcast request
     packet_t req;
     packet_t *req = malloc(sizeof(packet_t));
     req -> data = 0;
@@ -86,10 +85,8 @@ void get_pistol(){
 
 void try_killing(){
     if(shots_fired < A) {
-        //todo
         get_pistol();
         changeState(Shooting);
-        //endtodo
         shots_fired += 1;
         prey_not_responded = 1;
         int attack = rand() % 20;
@@ -101,7 +98,6 @@ void try_killing(){
             usleep(1000);
         }
         //got confirm, exiting,leaving the pistol
-        //todo
         release_pistol();
         changeState(Killer);
 
