@@ -2,10 +2,15 @@
 #include "watek_glowny.h"
 #include "watek_komunikacyjny.h"
 
-int rank, size;
+int rank, size; // rank == MyPID , size == WORLD_SIZE
 state_t stan=InRun;
 pthread_t threadKom, threadMon;
 pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
+
+// Mutex - clock
+pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;
+// Mutex - partner queue
+pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void finalizuj()
 {

@@ -2,6 +2,13 @@
 #define UTILH
 #include "main.h"
 
+
+#define KILLER 1
+#define RUNNER 0
+
+
+
+
 /* typ pakietu */
 typedef struct {
     int ts;       /* timestamp (zegar lamporta */
@@ -15,6 +22,9 @@ typedef struct {
 /* Typy wiadomości */
 #define APP_PKT 1
 #define FINISH 2
+#define KILL_ATTEMPT 11
+#define KILL_AVOIDED 12
+#define KILL_CONFIRMED 13
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();

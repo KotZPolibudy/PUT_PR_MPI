@@ -19,6 +19,19 @@ void *startKomWatek(void *ptr)
 	    case APP_PKT: 
                 debug("Dostałem pakiet od %d z danymi %d",pakiet.src, pakiet.data);
 	    break;
+        case KILL_ATTEMPT:
+            //todo
+            // wylosuj obrone
+            // if defend > pakiet.data
+            // MPI_Send "KILL_AVOIDED"
+            // else MPI_Send "KILL_CONFIRMED" + change state na finished
+        break;
+        case KILL_AVOIDED:
+         //todo;
+         break;
+        case KILL_CONFIRMED:
+            my_result = 1;
+            break;
 	    default:
 	    break;
         }
