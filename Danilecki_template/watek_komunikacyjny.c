@@ -1,5 +1,6 @@
 #include "main.h"
 #include "watek_komunikacyjny.h"
+#include "util.h"
 
 /* wątek komunikacyjny; zajmuje się odbiorem i reakcją na komunikaty */
 void *startKomWatek(void *ptr)
@@ -14,24 +15,41 @@ void *startKomWatek(void *ptr)
 
         switch ( status.MPI_TAG ) {
 	    case FINISH: 
-                changeState(InFinish);
+                changeState(Finished);
 	    break;
 	    case APP_PKT: 
                 debug("Dostałem pakiet od %d z danymi %d",pakiet.src, pakiet.data);
 	    break;
         case KILL_ATTEMPT:
             //todo
-            // wylosuj obrone
-            // if defend > pakiet.data
-            // MPI_Send "KILL_AVOIDED"
-            // else MPI_Send "KILL_CONFIRMED" + change state na finished
+            int def = random()%18;
+            packet_t *res = malloc(sizeof(packet_t));
+            res -> data = def;
+            if (def > pakiet.data){
+                sendPacket(res, pakiet.src, KILL_AVOIDED);
+            }
+            else{
+                sendPacket(res, pakiet.src, KILL_AVOIDED);
+                changeState(Finished);
+            }
         break;
         case KILL_AVOIDED:
-         //todo;
+         //todo ?
+         // nie wiem czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+         prey_not_responded = 1;
          break;
         case KILL_CONFIRMED:
+            //todo ?
+            // nie wiem czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
             my_result = 1;
+            prey_not_responded = 1;
             break;
+            case PARTNER_REQ:
+                //todo
+                break;
+            case PARTNER_ACC:
+                //todo
+                break;
 	    default:
 	    break;
         }

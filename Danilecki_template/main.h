@@ -19,7 +19,7 @@
 
 extern int rank;
 extern int size;
-typedef enum {InRun, InMonitor, InSend, InFinish} state_t;
+typedef enum {InRun, InMonitor, InSend, InFinish, Waiting_for_partner, Killer, Runner, Finished} state_t;
 extern state_t stan;
 extern pthread_t threadKom, threadMon;
 

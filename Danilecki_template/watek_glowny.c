@@ -24,7 +24,8 @@ int myrole = -1;
 int iteration = 0;
 int my_result;
 int result;
-int my_ammo;
+int shots_fired = 0;
+int prey_not_responded = 1;
 
 
 // Paring
@@ -53,6 +54,28 @@ void want_partner() {
         printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", lamport_clock,
                rank, iteration, partnerID);
     }
+}
+
+void try_killing(){
+    if(shots_fired < A) {
+        shots_fired += 1;
+        prey_not_responded = 1;
+        int attack = random() % 20;
+        packet_t *pkt = malloc(sizeof(packet_t));
+        pkt->data = attack;
+        sendPacket(pkt, partnerID, KILL_ATTEMPT);
+        //todo wait for confirmation
+        while(prey_not_responded){
+            usleep(1000);
+        }
+    }
+    else{
+        //send Finish, as there is no more ammo
+        packet_t *pkt = malloc(sizeof(packet_t));
+        pkt->data = 0;
+        sendPacket(pkt, partnerID, FINISH);
+    }
+
 }
 
 
@@ -95,16 +118,17 @@ void mainLoop()
         {
             //Refresh data
             myrole = -1;
-            //todo
-            // change state na inRun
+            changeState(Waiting_for_partner);
 
             //Find partner
             want_partner();
             //killers kill, runners "run"
             if(myrole == KILLER){
+                changeState(Killer);
                 try_killing();
             }
             else{
+                changeState(Runner);
                 do_nothing_basically(); // todo -wait to be killed, or just skip?
             }
             //Results
@@ -118,34 +142,3 @@ void mainLoop()
         }
     }
 }
-
-/*
-void mainloop{
-        srandom(rank);
-        int tag;
-        while (stan != InFinish) {
-            iteration++;
-            printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", lamport_clock, myPID, iteration);
-
-            for (int current_cycle = 0; current_cycle < C; current_cycle++) {
-                // 1. Init variables
-                init_variables();
-
-                // 2. Find partner and get roles
-                want_partner();   // if left in this state, should be in 1st place for next cycle
-
-                // 3. do your task
-                if (killer) {
-                    // todo -> name it try_killing() or do_killer_stuff()
-                    for (int my_ammo = A; my_ammo > 0 && !killed; my_ammo--) {
-                        killed = try_killing(); // todo
-                    }
-
-                } else {
-                    do_nothing_basically(); // todo - if needed?
-                }
-                //todo end_cycle(); (if killer only?)
-            } // end a cycle
-        }  // end while true
-};
-*/

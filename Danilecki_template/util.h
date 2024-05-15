@@ -25,6 +25,8 @@ typedef struct {
 #define KILL_ATTEMPT 11
 #define KILL_AVOIDED 12
 #define KILL_CONFIRMED 13
+#define PARTNER_REQ 20
+#define PARTNER_ACC 21
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();
