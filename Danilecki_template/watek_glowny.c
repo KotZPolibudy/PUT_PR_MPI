@@ -1,8 +1,6 @@
 #include "main.h"
 #include "watek_glowny.h"
 
-// My clock value
-int lamport_clock = 0;
 // Number of pistols
 int P = 5;
 // Number of cycles
@@ -39,21 +37,18 @@ int pistolREQ_res = 1; // start with yourself!
 // Need someone to kill or get killed
 void want_partner() {
     //Send requests for others
-    for(int i = 0; i < size; i++)
-    {
-        if (i!=rank)
-        {
-            sendPacket( pkt, i, REQUEST);
-        }
-    }
+    packet_t requestRole;
+    myrole = -1;
+    stan = Waiting_for_partner;
+    broadcast(requestRole, PARTNER_REQ);
 
     if(myrole == KILLER) {
         // Selected partner - time to go killing
-        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a killer \n", lamport_clock,
+        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a killer \n", clock,
                rank, iteration, partnerID);
     }
     else{
-        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", lamport_clock,
+        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", clock,
                rank, iteration, partnerID);
     }
 }
