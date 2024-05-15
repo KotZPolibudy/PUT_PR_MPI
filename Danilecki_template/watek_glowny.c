@@ -52,19 +52,42 @@ void want_partner() {
     }
 }
 
+
+void Release_pistol(){
+    //todo
+    changeState(Killer);
+    //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
+};
+
+
+void get_pistol(){
+    changeState(Pistol_Requested);
+    //todo
+    //broadcast request
+    //wait for res from everyone-P
+}
+
+
 void try_killing(){
     if(shots_fired < A) {
+        //todo
+        get_pistol();
+        changeState(Shooting);
+        //endtodo
         shots_fired += 1;
         prey_not_responded = 1;
-        int attack = random() % 20;
+        int attack = rand() % 20;
         packet_t *pkt = malloc(sizeof(packet_t));
         pkt->data = attack;
         sendPacket(pkt, partnerID, KILL_ATTEMPT);
-        //todo wait for confirmation
+        //wait for confirmation
         while(prey_not_responded){
             usleep(1000);
         }
-        //got confirm, exiting
+        //got confirm, exiting,leaving the pistol
+        //todo
+        release_pistol();
+
     }
     else{
         //send Finish, as there is no more ammo
@@ -106,7 +129,6 @@ void mainLoop()
         sleep(SEC_IN_STATE);
          */
 
-
         iteration++;
         printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", lamport_clock, rank, iteration);
 
@@ -130,11 +152,12 @@ void mainLoop()
             //Results
             if(myrole == KILLER){
                 //todo
-                //podsumowanie
+                //podsumowanie - dopisz wynik do jakiejś tablicy, żeby było na podsumowanie cyklu
             }
 
             changeState(Finished);
             sleep(SEC_IN_STATE);
         }
+        // podsumowanie cyklu
     }
 }

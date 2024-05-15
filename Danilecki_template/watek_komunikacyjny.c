@@ -26,7 +26,7 @@ void *startKomWatek(void *ptr)
 	    break;
         case KILL_ATTEMPT:
             //todo
-            int def = random()%18;
+            int def = rand()%18;
             packet_t *res = malloc(sizeof(packet_t));
             res -> data = def;
             if (def > pakiet.data){
