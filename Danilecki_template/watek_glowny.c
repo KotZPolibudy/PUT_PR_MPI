@@ -32,6 +32,10 @@ int prey_not_responded = 1;
 int waiting = -1;
 int received_friendship_response = 1; // start with yourself!
 
+// Pistols
+int pistolREQ_res = 1; // start with yourself!
+
+
 // Need someone to kill or get killed
 void want_partner() {
     //Send requests for others
@@ -56,17 +60,24 @@ void want_partner() {
 
 
 void Release_pistol(){
-    //todo
-    //changeState(Killer);
-    //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
+    changeState(Killer); //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
+    for(int i = 0; i < ile_requestow_po_pistolet; i++){
+        packet_t *res = malloc(sizeof(packet_t));
+        res->data = 0;
+        sendPacket(res, kolejka_do_odpowiedzi_na_pistolet[i], PISTOL_ACC); //do kazdego w kolejce
+    }
+
 };
 
 
 void get_pistol(){
     changeState(Pistol_Requested);
-    //todo
-    //broadcast request
+    //todo broadcast request
     //wait for res from everyone-P
+    while(pistolREQ_res < size - P){ //todo check the math, czy nie jakies +1 albo -1
+        usleep(1000);
+    }
+
 }
 
 
@@ -107,6 +118,9 @@ void mainLoop()
     srandom(rank);
     int tag;
     int Vector[size];
+    int kolejka_do_odpowiedzi_na_pistolet[size] = {-1};
+    for (int i = 0; i < size; i++) {array[i] = -1;} //Fill this with "-1"
+    int ile_requestow_po_pistolet = 0;
 
     while (stan != InFinish) {
         /*

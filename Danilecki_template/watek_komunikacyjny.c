@@ -52,11 +52,19 @@ void *startKomWatek(void *ptr)
                 break;
             case PISTOL_REQ:
                 // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-                packet_t *res = malloc(sizeof(packet_t));
-                res -> data = 0;
-                pthread_mutex_lock( &pistol_mutex );
-                sendPacket(res, pakiet.src, PISTOL_ACC);
-                pthread_mutex_unlock( &pistol_mutex );
+                //todo
+                //pthread_mutex_lock( &pistol_mutex ); -- niepotrzebne!
+                if(stan!= Pistol_Requested && stan != Shooting) {
+                    // zaakceptuj, że ktoś bierze
+                    packet_t *res = malloc(sizeof(packet_t));
+                    res->data = 0;
+                    sendPacket(res, pakiet.src, PISTOL_ACC);
+                    //pthread_mutex_unlock(&pistol_mutex);
+                }
+                else{
+                    kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
+                    ile_requestow_po_pistolet += 1;
+                }
                 break;
             case PISTOL_ACC:
 

@@ -74,3 +74,22 @@ void tick_Lamport_clock(int new = 0)
     pthread_mutex_unlock( &clock_mutex );
 
 }
+
+void broadcast(packet_t *pkt, int tag)
+    {
+        int freepkt=0;
+        if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+        pkt->src = rank;
+        pthread_mutex_lock(&clock_mutex);
+        clock++;
+        pkt->ts = clock;
+        pthread_mutex_unlock(&clock_mutex);
+        for(int j=0; j<size; j++){
+            if(rank != j){
+                MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
+            }
+        }
+        debug("Wysyłam Grupowo %s\n", tag2string( tag), destination);
+        if (freepkt) free(pkt);
+    }
+
