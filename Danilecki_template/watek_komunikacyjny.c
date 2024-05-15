@@ -12,6 +12,10 @@ void *startKomWatek(void *ptr)
     while ( stan!=InFinish ) {
 	debug("czekam na recv");
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        //todo tick lamport_clock? - to zrobię na końcu, bo to wydaje się proste
+        //mutex
+        //tick
+        //mutex
 
         switch ( status.MPI_TAG ) {
 	    case FINISH: 

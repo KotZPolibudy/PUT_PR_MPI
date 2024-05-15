@@ -30,7 +30,7 @@ int prey_not_responded = 1;
 
 // Paring
 int waiting = -1;
-
+int received_friendship_response = 1; // start with yourself!
 
 // Need someone to kill or get killed
 void want_partner() {
@@ -38,11 +38,7 @@ void want_partner() {
     // Broadcast find partner request
     // broadcast(lamport_clock, iteration, temp.time, TAG_FIND_PARTNER, total_process, myPID);
 
-    // Wait until receive all confirmations
-    while(received_friendship_response < total_process) {
-        usleep(1000);
-    }
-    printf("[%05d][%02d] Received all messages\n", lamport_clock, myPID);
+   //todo implementacja Mikołaja
 
 
     if(myrole == KILLER) {
@@ -68,6 +64,7 @@ void try_killing(){
         while(prey_not_responded){
             usleep(1000);
         }
+        //got confirm, exiting
     }
     else{
         //send Finish, as there is no more ammo
@@ -77,7 +74,6 @@ void try_killing(){
     }
 
 }
-
 
 
 void mainLoop()
@@ -112,7 +108,7 @@ void mainLoop()
 
 
         iteration++;
-        printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", lamport_clock, myPID, iteration);
+        printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", lamport_clock, rank, iteration);
 
         for (int current_cycle = 0; current_cycle < C; current_cycle++)
         {
@@ -134,10 +130,10 @@ void mainLoop()
             //Results
             if(myrole == KILLER){
                 //todo
-                //change state na finished
                 //podsumowanie
             }
-            //todo changeState na finished
+
+            changeState(Finished);
             sleep(SEC_IN_STATE);
         }
     }

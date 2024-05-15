@@ -15,6 +15,8 @@ pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;
 void finalizuj()
 {
     pthread_mutex_destroy( &stateMut);
+    pthread_mutex_destroy( &clock_mutex);
+    pthread_mutex_destroy( &partner_mutex);
     /* Czekamy, aż wątek potomny się zakończy */
     println("czekam na wątek \"komunikacyjny\"\n" );
     pthread_join(threadKom,NULL);
