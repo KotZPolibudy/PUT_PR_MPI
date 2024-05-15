@@ -49,7 +49,7 @@ void check_thread_support(int provided)
             /* Potrzebne zamki wokół wywołań biblioteki MPI */
             printf("tylko jeden watek naraz może wykonać wołania do biblioteki MPI\n");
 	    break;
-        case MPI_THREAD_MULTIPLE: printf("Pełne wsparcie dla wątków\n"); /* tego chcemy. Wszystkie inne powodują problemy */
+        case MPI_THREAD_MULTIPLE: printf("Pełne wsparcie dla wątków\n"); /* Tego chcemy. Wszystkie inne powodują problemy */
 	    break;
         default: printf("Nikt nic nie wie\n");
     }

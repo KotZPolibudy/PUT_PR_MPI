@@ -73,7 +73,10 @@ void Release_pistol(){
 void get_pistol(){
     changeState(Pistol_Requested);
     //todo broadcast request
-    //wait for res from everyone-P
+    packet_t req;
+    packet_t *req = malloc(sizeof(packet_t));
+    req -> data = 0;
+    broadcast(req, pistol_REQ);
     while(pistolREQ_res < size - P){ //todo check the math, czy nie jakies +1 albo -1
         usleep(1000);
     }
