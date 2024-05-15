@@ -1,5 +1,6 @@
 #include "main.h"
 #include "util.h"
+#include "customqueue.h"
 MPI_Datatype MPI_PAKIET_T;
 
 struct tagNames_t{
@@ -43,8 +44,8 @@ void sendPacket(packet_t *pkt, int destination, int tag)
     if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
     pkt->src = rank;
     pthread_mutex_lock(&clock_mutex);
-    clock++;
-    pkt->ts = clock;
+    LamportClock++;
+    pkt->ts = LamportClock;
     pthread_mutex_unlock(&clock_mutex);
     MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
     debug("Wysyłam %s do %d\n", tag2string( tag), destination);
@@ -62,28 +63,29 @@ void changeState( state_t newState )
     pthread_mutex_unlock( &stateMut );
 }
 
-void tick_Lamport_clock(int new = 0)
+void tick_Lamport_clock(int new)
 { //default na 0, bo przy wysylaniu np. nie ma nowej wartosci
     pthread_mutex_lock( &clock_mutex );
-    if(new > lamport_clock){
-        lamport_clock = new +1;
+    if(new > LamportClock){
+        LamportClock = new +1;
     }
     else{
-        lamport_clock += 1;
+        LamportClock += 1;
     }
     pthread_mutex_unlock( &clock_mutex );
 
 }
 
-void broadcast(packet_t *pkt, int tag)
+void broadcast(Queue* q, packet_t *pkt, int tag)
     {
         int freepkt=0;
         if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
         pkt->src = rank;
         pthread_mutex_lock(&clock_mutex);
-        clock++;
-        pkt->ts = clock;
+        LamportClock++;
+        pkt->ts = LamportClock;
         pthread_mutex_unlock(&clock_mutex);
+        insert(q, *pkt); //sprawdzic czy faktycznie cos wstawia
         for(int j=0; j<size; j++){
             if(rank != j){
                 MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);

@@ -44,7 +44,7 @@ void insert(Queue* q, packet_t packet) {
 }
 
 // Function to delete an element from the queue
-packet_t delete(Queue* q) {
+void delete_front(Queue* q) {
     if (!q->front) {
         printf("Queue is empty\n");
         exit(EXIT_FAILURE);
@@ -56,7 +56,30 @@ packet_t delete(Queue* q) {
         q->rear = NULL;
     }
     free(temp);
-    return packet;
+}
+
+// Function to delete an element at a specific position in the queue
+void delete_at_position(Queue* q, int position) {
+    if (!q->front) {
+        printf("Queue is empty\n");
+        return;
+    }
+    QueueNode* temp = q->front;
+    if (position == 0) {
+        q->front = q->front->next;
+        free(temp);
+        return;
+    }
+    for (int i = 0; temp != NULL && i < position - 1; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL || temp->next == NULL) {
+        printf("Invalid position\n");
+        return;
+    }
+    QueueNode* next = temp->next->next;
+    free(temp->next);
+    temp->next = next;
 }
 
 // Function to find the position of an element in the queue

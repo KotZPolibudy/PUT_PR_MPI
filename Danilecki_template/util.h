@@ -37,5 +37,6 @@ void sendPacket(packet_t *pkt, int destination, int tag);
 
 void tick_Lamport_clock();
 
-void broadcast(packet_t *pkt, int tag)
+void broadcast(Queue* q, packet_t *pkt, int tag);
+
 #endif

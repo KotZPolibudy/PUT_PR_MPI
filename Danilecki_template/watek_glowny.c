@@ -37,19 +37,30 @@ int pistolREQ_res = 1; // start with yourself!
 
 // Need someone to kill or get killed
 void want_partner() {
-    //Send requests for others
-    packet_t requestRole;
-    myrole = -1;
-    stan = Waiting_for_partner;
-    broadcast(requestRole, PARTNER_REQ);
-
+    //Check if we aren't already assigned
+    pthread_mutex_lock(&stateMut);
+    if(stan == Waiting_for_partner)
+    {
+        pthread_mutex_unlock(&stateMut);
+        //Send requests for others
+        packet_t* requestRole;
+        myrole = -1;
+        ACKcount = 0;
+        pthread_mutex_lock(&stateMut);
+        stan = Partner_requested;
+        broadcast(pairing_queue, requestRole, PARTNER_REQ);
+        pthread_mutex_unlock(&stateMut);
+    }
+    
+    //wait for getting role assigned
+    while(myrole == -1);
     if(myrole == KILLER) {
         // Selected partner - time to go killing
-        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a killer \n", clock,
+        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a killer \n", LamportClock,
                rank, iteration, partnerID);
     }
     else{
-        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", clock,
+        printf("[%05d][PID: %02d][IT: %02d] I have partner! Selected process %02d And I am a runner \n", LamportClock,
                rank, iteration, partnerID);
     }
 }
@@ -112,7 +123,7 @@ void mainLoop()
 {
     srandom(rank);
     int tag;
-    int Vector[size];
+    pairing_queue = create_queue(); 
     int kolejka_do_odpowiedzi_na_pistolet[size] = {-1};
     for (int i = 0; i < size; i++) {array[i] = -1;} //Fill this with "-1"
     int ile_requestow_po_pistolet = 0;

@@ -3,7 +3,7 @@
 #include "watek_komunikacyjny.h"
 
 int rank, size; // rank == MyPID , size == WORLD_SIZE
-int clock = 0;
+int LamportClock = 0;
 state_t stan=InRun;
 pthread_t threadKom, threadMon;
 // Mutex - change state

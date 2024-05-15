@@ -17,7 +17,8 @@ typedef struct {
 // Function declarations
 Queue* create_queue();
 void insert(Queue* q, packet_t packet);
-packet_t delete(Queue* q);
+void delete_at_position(Queue* q, int position);
+void delete_front(Queue* q);
 int find_position(Queue* q, packet_t packet);
 void display_queue(Queue* q);
 

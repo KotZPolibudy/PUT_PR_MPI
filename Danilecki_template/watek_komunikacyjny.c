@@ -15,13 +15,13 @@ void *startKomWatek(void *ptr)
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         //Update clock
         pthread_mutex_lock(&clock_mutex);
-        if(pakiet.ts > clock)
+        if(pakiet.ts > LamportClock)
         {
-            clock = pakiet.ts+1;
+            LamportClock = pakiet.ts+1;
         }
         else
         {
-            clock++;
+            LamportClock++;
         }
         pthread_mutex_unlock(&clock_mutex);
 
@@ -47,18 +47,34 @@ void *startKomWatek(void *ptr)
         break;
         case KILL_AVOIDED:
          // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-         prey_not_responded = 1;
+         //prey_not_responded = 1;
          break;
         case KILL_CONFIRMED:
         // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-        my_result = 1;
-        prey_not_responded = 1;
+        //my_result = 1;
+        //prey_not_responded = 1;
         break;
         case PARTNER_REQ:
-            //todo
+            //If someone wants to pair allow them
+            insert(pairing_queue, pakiet);
+            packet_t *ans;
+            ans->src = rank;
+            ans->ts = LamportClock;
+            pthread_mutex_lock(&stateMut);
+            if(stan == Waiting_for_partner)
+            {
+                sendPacket(ans, pakiet.src, PARTNER_REQ);
+                stan = Partner_requested;
+            }
+            else
+            {
+                sendPacket(ans, pakiet.src, PARTNER_REQ);
+            }
+            pthread_mutex_unlock(&stateMut);
+            sendPacket(ans, pakiet.src, PARTNER_ACC);
             break;
         case PARTNER_ACC:
-            //todo
+            // Increment ACK counter
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
@@ -72,8 +88,8 @@ void *startKomWatek(void *ptr)
                 //pthread_mutex_unlock(&pistol_mutex);
             }
             else{
-                kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
-                ile_requestow_po_pistolet += 1;
+                //kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
+                //ile_requestow_po_pistolet += 1;
             }
             break;
         case PISTOL_ACC:
