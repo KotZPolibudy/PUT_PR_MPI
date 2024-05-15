@@ -34,12 +34,14 @@ int received_friendship_response = 1; // start with yourself!
 
 // Need someone to kill or get killed
 void want_partner() {
-    //todo
-    // Broadcast find partner request
-    // broadcast(lamport_clock, iteration, temp.time, TAG_FIND_PARTNER, total_process, myPID);
-
-   //todo implementacja Mikołaja
-
+    //Send requests for others
+    for(int i = 0; i < size; i++)
+    {
+        if (i!=rank)
+        {
+            sendPacket( pkt, i, REQUEST);
+        }
+    }
 
     if(myrole == KILLER) {
         // Selected partner - time to go killing

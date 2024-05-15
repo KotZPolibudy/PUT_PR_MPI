@@ -3,16 +3,20 @@
 #include "watek_komunikacyjny.h"
 
 int rank, size; // rank == MyPID , size == WORLD_SIZE
+int clock = 0;
 state_t stan=InRun;
 pthread_t threadKom, threadMon;
+// Mutex - change state
 pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
-
 // Mutex - clock
 pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - partner queue
 pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - pistol queue
 pthread_mutex_t pistol_mutex = PTHREAD_MUTEX_INITIALIZER;
+// Mutex - ACK Count
+pthread_mutex_t ACK_mutex = PTHREAD_MUTEX_INITIALIZER;
+int ACKcount = 0;
 
 void finalizuj()
 {

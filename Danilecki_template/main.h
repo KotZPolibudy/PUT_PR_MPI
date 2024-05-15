@@ -19,14 +19,15 @@
 
 extern int rank;
 extern int size;
+extern int clock;
 typedef enum {InRun, InMonitor, InSend, InFinish, Waiting_for_partner, Killer, Runner, Finished, Pistol_Requested, Shooting} state_t;
 extern state_t stan;
 extern pthread_t threadKom, threadMon;
 
 extern pthread_mutex_t stateMut;
-
-
-
+extern pthread_mutex_t clock_mutex;
+extern pthread_mutex_t ACK_mutex;
+extern int ACKcount;
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta 
