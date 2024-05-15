@@ -1,6 +1,7 @@
 #include "main.h"
 #include "watek_komunikacyjny.h"
 #include "util.h"
+#include "customqueue.h"
 
 /* wątek komunikacyjny; zajmuje się odbiorem i reakcją na komunikaty */
 void *startKomWatek(void *ptr)
@@ -14,7 +15,7 @@ void *startKomWatek(void *ptr)
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         //Update clock
         pthread_mutex_lock(&clock_mutex);
-        if(pakiet.ts > zegar)
+        if(pakiet.ts > clock)
         {
             clock = pakiet.ts+1;
         }
@@ -49,33 +50,33 @@ void *startKomWatek(void *ptr)
          prey_not_responded = 1;
          break;
         case KILL_CONFIRMED:
-            // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-            my_result = 1;
-            prey_not_responded = 1;
+        // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+        my_result = 1;
+        prey_not_responded = 1;
+        break;
+        case PARTNER_REQ:
+            //todo
             break;
-            case PARTNER_REQ:
-                //todo
-                break;
-            case PARTNER_ACC:
-                //todo
-                break;
-            case PISTOL_REQ:
-                // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-                //todo
-                //pthread_mutex_lock( &pistol_mutex ); -- niepotrzebne!
-                if(stan!= Pistol_Requested && stan != Shooting) {
-                    // zaakceptuj, że ktoś bierze
-                    packet_t *res = malloc(sizeof(packet_t));
-                    res->data = 0;
-                    sendPacket(res, pakiet.src, PISTOL_ACC);
-                    //pthread_mutex_unlock(&pistol_mutex);
-                }
-                else{
-                    kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
-                    ile_requestow_po_pistolet += 1;
-                }
-                break;
-            case PISTOL_ACC:
+        case PARTNER_ACC:
+            //todo
+            break;
+        case PISTOL_REQ:
+            // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+            //todo
+            //pthread_mutex_lock( &pistol_mutex ); -- niepotrzebne!
+            if(stan!= Pistol_Requested && stan != Shooting) {
+                // zaakceptuj, że ktoś bierze
+                packet_t *res = malloc(sizeof(packet_t));
+                res->data = 0;
+                sendPacket(res, pakiet.src, PISTOL_ACC);
+                //pthread_mutex_unlock(&pistol_mutex);
+            }
+            else{
+                kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
+                ile_requestow_po_pistolet += 1;
+            }
+            break;
+        case PISTOL_ACC:
 
 
                 break;

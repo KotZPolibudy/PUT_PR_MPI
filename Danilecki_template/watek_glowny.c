@@ -1,5 +1,6 @@
 #include "main.h"
 #include "watek_glowny.h"
+#include "customqueue.h"
 
 // Number of pistols
 int P = 5;

@@ -11,9 +11,8 @@
 
 /* typ pakietu */
 typedef struct {
-    int ts;       /* timestamp (zegar lamporta */
+    int ts;       /* timestamp (zegar lamporta) */
     int src;  
-
     int data;     /* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą */
 } packet_t;
 /* packet_t ma trzy pola, więc NITEMS = 3. Wykorzystane w inicjuj_typ_pakietu */
