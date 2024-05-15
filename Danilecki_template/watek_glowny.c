@@ -26,6 +26,7 @@ int my_result;
 int result;
 int shots_fired = 0;
 int prey_not_responded = 1;
+int ile_requestow_po_pistolet = 0;
 
 
 // Paring
@@ -132,9 +133,8 @@ void mainLoop()
     pairing_queue = create_queue();
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
-    int kolejka_do_odpowiedzi_na_pistolet[size];
+    int kolejka_do_odpowiedzi_na_pistolet[size]; //todo ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloca bo jak to zadziała to tylko przypadkiem
     for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
-    int ile_requestow_po_pistolet = 0;
 
     while (stan != InFinish) {
         /*
