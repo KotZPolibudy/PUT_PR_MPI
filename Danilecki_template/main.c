@@ -1,6 +1,7 @@
 #include "main.h"
 #include "watek_glowny.h"
 #include "watek_komunikacyjny.h"
+#include "customqueue.h"
 
 int rank, size; // rank == MyPID , size == WORLD_SIZE
 int LamportClock = 0;

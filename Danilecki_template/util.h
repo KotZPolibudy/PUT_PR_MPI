@@ -1,12 +1,10 @@
 #ifndef UTILH
 #define UTILH
+#include "customqueue.h"
 #include "main.h"
-
 
 #define KILLER 1
 #define RUNNER 0
-
-
 
 
 /* typ pakietu */

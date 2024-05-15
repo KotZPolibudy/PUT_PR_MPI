@@ -1,5 +1,6 @@
 #include "main.h"
 #include "watek_glowny.h"
+#include "util.h"
 #include "customqueue.h"
 
 // Number of pistols
@@ -66,7 +67,7 @@ void want_partner() {
 }
 
 
-void Release_pistol(){
+void release_pistol(){
     changeState(Killer); //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
     for(int i = 0; i < ile_requestow_po_pistolet; i++){
         packet_t *res = malloc(sizeof(packet_t));
@@ -118,13 +119,20 @@ void try_killing(){
 
 }
 
+void do_nothing_basically(){
+    //Be a runner, change state?
+    usleep(100);
+}
+
 
 void mainLoop()
 {
     srandom(rank);
     int tag;
-    pairing_queue = create_queue(); 
-    int kolejka_do_odpowiedzi_na_pistolet[size] = {-1};
+    pairing_queue = create_queue();
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
+    int kolejka_do_odpowiedzi_na_pistolet[size];
     for (int i = 0; i < size; i++) {array[i] = -1;} //Fill this with "-1"
     int ile_requestow_po_pistolet = 0;
 
@@ -170,7 +178,7 @@ void mainLoop()
             }
             else{
                 changeState(Runner);
-                do_nothing_basically(); // todo -wait to be killed, or just skip?
+                do_nothing_basically();
             }
             //Results
             if(myrole == KILLER){

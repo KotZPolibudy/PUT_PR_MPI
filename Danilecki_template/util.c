@@ -91,7 +91,7 @@ void broadcast(Queue* q, packet_t *pkt, int tag)
                 MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
             }
         }
-        debug("Wysyłam Grupowo %s\n", tag2string( tag), destination);
+        debug("Wysyłam Grupowo %s\n", tag2string( tag));
         if (freepkt) free(pkt);
     }
 
