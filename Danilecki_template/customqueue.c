@@ -50,7 +50,7 @@ void delete_front(Queue* q) {
         exit(EXIT_FAILURE);
     }
     QueueNode* temp = q->front;
-    packet_t packet = temp->packet;
+    //packet_t packet = temp->packet;
     q->front = q->front->next;
     if (!q->front) {
         q->rear = NULL;

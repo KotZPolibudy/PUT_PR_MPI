@@ -3,11 +3,13 @@
 #include "util.h"
 #include "customqueue.h"
 
+
 /* wątek komunikacyjny; zajmuje się odbiorem i reakcją na komunikaty */
 void *startKomWatek(void *ptr)
 {
+    int rank = *((int*)(ptr));
     MPI_Status status;
-    int is_message = FALSE;
+    //int is_message = FALSE;
     packet_t pakiet;
     /* Obrazuje pętlę odbierającą pakiety o różnych typach */
     while ( stan!=InFinish ) {
@@ -57,7 +59,7 @@ void *startKomWatek(void *ptr)
         case PARTNER_REQ:
             //If someone wants to pair allow them
             insert(pairing_queue, pakiet);
-            packet_t *ans;
+            packet_t ans[1];
             ans->src = rank;
             ans->ts = LamportClock;
             pthread_mutex_lock(&stateMut);
@@ -101,4 +103,5 @@ void *startKomWatek(void *ptr)
 	    break;
         }
     }
+    return NULL;
 }

@@ -8,7 +8,7 @@ struct tagNames_t{
     int tag;
 } tagNames[] = { { "pakiet aplikacyjny", APP_PKT }, { "finish", FINISH}};
 
-const char const *tag2string( int tag )
+const char *tag2string( int tag )
 {
     for (int i=0; i <sizeof(tagNames)/sizeof(struct tagNames_t);i++) {
 	if ( tagNames[i].tag == tag )  return tagNames[i].name;

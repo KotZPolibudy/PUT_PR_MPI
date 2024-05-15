@@ -36,16 +36,16 @@ int received_friendship_response = 1; // start with yourself!
 // Pistols
 int pistolREQ_res = 1; // start with yourself!
 
+Queue* pairing_queue;
+
 
 // Need someone to kill or get killed
 void want_partner() {
     //Check if we aren't already assigned
-    pthread_mutex_lock(&stateMut);
     if(stan == Waiting_for_partner)
     {
-        pthread_mutex_unlock(&stateMut);
         //Send requests for others
-        packet_t* requestRole;
+        packet_t* requestRole = NULL;
         myrole = -1;
         ACKcount = 0;
         pthread_mutex_lock(&stateMut);
@@ -128,7 +128,7 @@ void do_nothing_basically(){
 void mainLoop()
 {
     srandom(rank);
-    int tag;
+    //int tag;
     pairing_queue = create_queue();
     //MPI_Comm_size(MPI_COMM_WORLD, &size);
     //MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D

@@ -3,7 +3,7 @@
 #include "watek_komunikacyjny.h"
 #include "customqueue.h"
 
-int rank, size; // rank == MyPID , size == WORLD_SIZE
+int rank = 0, size; // rank == MyPID , size == WORLD_SIZE
 int LamportClock = 0;
 state_t stan=InRun;
 pthread_t threadKom, threadMon;
@@ -59,16 +59,16 @@ void check_thread_support(int provided)
 
 int main(int argc, char **argv)
 {
-    MPI_Status status;
+    //MPI_Status status;
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
     srand(rank);
     inicjuj_typ_pakietu(); // tworzy typ pakietu
-    packet_t pkt;
+    //packet_t pkt;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    pthread_create( &threadKom, NULL, startKomWatek , 0);
+    pthread_create( &threadKom, NULL, startKomWatek , &rank);
 
     mainLoop();
     
