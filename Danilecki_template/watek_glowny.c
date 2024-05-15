@@ -55,7 +55,7 @@ void want_partner() {
 
 void Release_pistol(){
     //todo
-    changeState(Killer);
+    //changeState(Killer);
     //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
 };
 
@@ -87,6 +87,7 @@ void try_killing(){
         //got confirm, exiting,leaving the pistol
         //todo
         release_pistol();
+        changeState(Killer);
 
     }
     else{

@@ -13,9 +13,7 @@ void *startKomWatek(void *ptr)
 	debug("czekam na recv");
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         //todo tick lamport_clock? - to zrobię na końcu, bo to wydaje się proste
-        //mutex
-        //tick
-        //mutex
+        //tick_lamport_clock(VALUE)
 
         switch ( status.MPI_TAG ) {
 	    case FINISH: 
@@ -38,13 +36,11 @@ void *startKomWatek(void *ptr)
             }
         break;
         case KILL_AVOIDED:
-         //todo ?
-         // nie wiem czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+         // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
          prey_not_responded = 1;
          break;
         case KILL_CONFIRMED:
-            //todo ?
-            // nie wiem czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+            // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
             my_result = 1;
             prey_not_responded = 1;
             break;
@@ -54,7 +50,20 @@ void *startKomWatek(void *ptr)
             case PARTNER_ACC:
                 //todo
                 break;
+            case PISTOL_REQ:
+                // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+                packet_t *res = malloc(sizeof(packet_t));
+                res -> data = 0;
+                pthread_mutex_lock( &pistol_mutex );
+                sendPacket(res, pakiet.src, PISTOL_ACC);
+                pthread_mutex_unlock( &pistol_mutex );
+                break;
+            case PISTOL_ACC:
+
+
+                break;
 	    default:
+            debug("Nieznany typ wiadomosci! %d , %d, %d ",pakiet.src, pakiet.data, status.MPI_TAG);
 	    break;
         }
     }

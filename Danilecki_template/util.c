@@ -58,7 +58,15 @@ void changeState( state_t newState )
     pthread_mutex_unlock( &stateMut );
 }
 
-void tick_Lamport_clock()
-{
+void tick_Lamport_clock(int new = 0)
+{ //default na 0, bo przy wysylaniu np. nie ma nowej wartosci
+    pthread_mutex_lock( &clock_mutex );
+    if(new > lamport_clock){
+        lamport_clock = new +1;
+    }
+    else{
+        lamport_clock += 1;
+    }
+    pthread_mutex_unlock( &clock_mutex );
 
 }
