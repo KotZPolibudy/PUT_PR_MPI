@@ -80,10 +80,10 @@ void release_pistol(){
 
 void get_pistol(){
     changeState(Pistol_Requested);
-    packet_t req;
+    packet_t reqqq;
     packet_t *req = malloc(sizeof(packet_t));
-    req -> data = 0;
-    broadcast(req, pistol_REQ);
+    reqqq -> data = 0;
+    broadcast(reqqq, PISTOL_REQ); //todo broadcast dostał kolejke, trzeba by coś podać w ten argument
     while(pistolREQ_res < size - P){ //todo check the math, czy nie jakies +1 albo -1
         usleep(1000);
     }
@@ -133,7 +133,7 @@ void mainLoop()
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
     int kolejka_do_odpowiedzi_na_pistolet[size];
-    for (int i = 0; i < size; i++) {array[i] = -1;} //Fill this with "-1"
+    for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
     int ile_requestow_po_pistolet = 0;
 
     while (stan != InFinish) {
@@ -161,8 +161,7 @@ void mainLoop()
          */
 
         iteration++;
-        printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", lamport_clock, rank, iteration);
-
+        printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", LamportClock, rank, iteration);
         for (int current_cycle = 0; current_cycle < C; current_cycle++)
         {
             //Refresh data
