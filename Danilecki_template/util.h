@@ -1,20 +1,12 @@
 #ifndef UTILH
 #define UTILH
+#include "packet.h"
 #include "customqueue.h"
 #include "main.h"
 
+
 #define KILLER 1
 #define RUNNER 0
-
-
-/* typ pakietu */
-typedef struct {
-    int ts;       /* timestamp (zegar lamporta) */
-    int src;  
-    int data;     /* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą */
-} packet_t;
-/* packet_t ma trzy pola, więc NITEMS = 3. Wykorzystane w inicjuj_typ_pakietu */
-#define NITEMS 3
 
 /* Typy wiadomości */ // TAG, TAGS, tag, Tag, Tags, tags
 #define APP_PKT 1

@@ -1,7 +1,7 @@
 #ifndef CUSTOMQUEUE_H
 #define CUSTOMQUEUE_H
-
-#include "util.h" // Include util.h to access packet_t
+#include "packet.h"
+//#include "util.h" // Include util.h to access packet_t
 
 // Queue structure
 typedef struct QueueNode {
