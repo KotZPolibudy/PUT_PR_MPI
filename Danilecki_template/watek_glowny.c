@@ -153,7 +153,9 @@ void mainLoop()
     while(1)
     {
         want_partner();
+        break;
     }
+    while(1);
     while (stan != InFinish) {
         /*
          * //Danilecki template

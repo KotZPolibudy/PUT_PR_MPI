@@ -61,10 +61,12 @@ void *startKomWatek(void *ptr)
         break;
         case PARTNER_REQ:
         debug("Dostalem pytanie o partnera od %d", pakiet.src);
-            //If someone wants to pair allow them and place them in the queue
-            pthread_mutex_lock(&queue_mutex);
-            insert(pairing_queue, pakiet);
-            pthread_mutex_unlock(&queue_mutex);
+        //If someone wants to pair allow them and place them in the queue
+        pthread_mutex_lock(&queue_mutex);
+        insert(pairing_queue, pakiet);
+        pthread_mutex_unlock(&queue_mutex);
+        //Dont answer for your own request
+        if(pakiet.src != rank){
             response->ts = LamportClock;
             pthread_mutex_lock(&state_mutex);
             if(stan == SupportsPairing)
@@ -74,6 +76,7 @@ void *startKomWatek(void *ptr)
             }
             pthread_mutex_unlock(&state_mutex);
             sendPacket(response, pakiet.src, PAIRING_ACK);
+        }
             break;
         case PAIRING_ACK:
         debug("Dostalem potwierdzenie na pytanie o partnera od %d", pakiet.src);
@@ -81,24 +84,24 @@ void *startKomWatek(void *ptr)
             pthread_mutex_lock(&ACK_mutex);
             ACKcount++;
             debug("ile mi zaakceptowalo %d", ACKcount);
-            pthread_mutex_lock(&queue_mutex);
-            display_queue(pairing_queue);
-            pthread_mutex_unlock(&queue_mutex);
             //Check how many responses we have
             if(ACKcount == size - 1)
             {
                 pthread_mutex_unlock(&ACK_mutex);
+                pthread_mutex_lock(&queue_mutex);
+                display_queue(pairing_queue);
+                pthread_mutex_unlock(&queue_mutex);
                 int position = find_position(pairing_queue, *response);
+                debug("Moja pozycja to %d", position);
                 //odd-placed processes inform their partners
                 if(position % 2 == 1)
                 {
                     myrole = KILLER;
+                    partnerID = get_nth_element(pairing_queue, position-1);
+                    //Remove both from queue
+                    //Or not
+                    sendPacket(response, partnerID, YOU_ARE_RUNNER);
                 }
-                partnerID = get_nth_element(pairing_queue, position-1);
-                //Remove both from queue
-                //Or not
-                sendPacket(response, partnerID, YOU_ARE_RUNNER);
-                //
             }
             else
             {
