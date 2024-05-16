@@ -84,7 +84,7 @@ void tick_Lamport_clock(int new)
 
 }
 
-void broadcast(packet_t *pkt, int tag)
+void broadcast(packet_t *pkt, int tag) //znowu wysyla do kazdego poza soba
 {
     int freepkt=1;
     if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
@@ -93,8 +93,9 @@ void broadcast(packet_t *pkt, int tag)
     LamportClock++;
     pkt->ts = LamportClock;
     pthread_mutex_unlock(&clock_mutex);
+    pkt->data = 0;
     for(int j=0; j<size; j++){
-        MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
+        if(rank!=j) MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
     }
     debug("Wysyłam Grupowo %s\n", tag2string( tag));
     if (freepkt) free(pkt);

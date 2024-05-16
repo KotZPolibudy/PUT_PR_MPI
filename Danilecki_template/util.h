@@ -11,9 +11,9 @@
 /* Typy wiadomości */ // TAG, TAGS, tag, Tag, Tags, tags
 #define APP_PKT 1
 #define FINISH 2
-#define KILL_ATTEMPT 11
-#define KILL_AVOIDED 12
-#define KILL_CONFIRMED 13
+#define KILL_ATTEMPT 111
+#define KILL_AVOIDED 121
+#define KILL_CONFIRMED 131
 #define PARTNER_REQ 20
 #define PAIRING_ACK 21
 #define YOU_ARE_KILLER 22
