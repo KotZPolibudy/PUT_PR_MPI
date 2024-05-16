@@ -54,13 +54,13 @@ void sendPacket(packet_t *pkt, int destination, int tag)
 
 void changeState( state_t newState )
 {
-    pthread_mutex_lock( &stateMut );
+    pthread_mutex_lock( &state_mutex );
     if (stan==InFinish) { 
-	pthread_mutex_unlock( &stateMut );
+	pthread_mutex_unlock( &state_mutex );
         return;
     }
     stan = newState;
-    pthread_mutex_unlock( &stateMut );
+    pthread_mutex_unlock( &state_mutex );
 }
 
 void tick_Lamport_clock(int new)

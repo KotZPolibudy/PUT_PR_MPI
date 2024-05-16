@@ -63,8 +63,8 @@ void *startKomWatek(void *ptr)
             packet_t ans[1];
             ans->src = rank;
             ans->ts = LamportClock;
-            pthread_mutex_lock(&stateMut);
-            if(stan == Waiting_for_partner)
+            pthread_mutex_lock(&state_mutex);
+            if(stan == SupportsPairing)
             {
                 sendPacket(ans, pakiet.src, PARTNER_REQ);
                 stan = Partner_requested;
@@ -73,7 +73,7 @@ void *startKomWatek(void *ptr)
             {
                 sendPacket(ans, pakiet.src, PARTNER_REQ);
             }
-            pthread_mutex_unlock(&stateMut);
+            pthread_mutex_unlock(&state_mutex);
             sendPacket(ans, pakiet.src, PARTNER_ACC);
             break;
         case PARTNER_ACC:

@@ -42,22 +42,26 @@ int received_friendship_response = 1; // start with yourself!
 int pistolREQ_res = 1; // start with yourself!
 
 Queue* pairing_queue;
-
+Queue* pistol_queue;
 
 // Need someone to kill or get killed
-void want_partner() {
+void want_partner()
+{
+    packet_t* requestRole = NULL;
     //Check if we aren't already assigned
-    if(stan == Waiting_for_partner)
+    pthread_mutex_lock(&state_mutex);
+    if(stan == SupportsPairing)
     {
-        //Send requests for others
-        packet_t* requestRole = NULL;
-        myrole = -1;
+        pthread_mutex_unlock(&state_mutex);
+        pthread_mutex_lock(&ACK_mutex);
         ACKcount = 0;
-        pthread_mutex_lock(&stateMut);
+        pthread_mutex_unlock(&ACK_mutex);
+        //Send requests for others
+        pthread_mutex_lock(&state_mutex);
         stan = Partner_requested;
         broadcast(pairing_queue, requestRole, PARTNER_REQ);
-        pthread_mutex_unlock(&stateMut);
     }
+    pthread_mutex_unlock(&state_mutex);
     
     //wait for getting role assigned
     while(myrole == -1);
@@ -135,11 +139,13 @@ void mainLoop()
     srandom(rank);
     //int tag;
     pairing_queue = create_queue();
-    //MPI_Comm_size(MPI_COMM_WORLD, &size);
-    //MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
     // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloc, bo jak to zadziała to tylko przypadkiem
-    kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
-    for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
+    // kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
+    // sugeruje uzyc mojego
+    pistol_queue = create_queue();
+    //for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
 
     while (stan != InFinish) {
         /*
@@ -171,7 +177,9 @@ void mainLoop()
         {
             //Refresh data
             myrole = -1;
-            changeState(Waiting_for_partner);
+            pthread_mutex_lock(&state_mutex);
+            changeState(SupportsPairing);
+            pthread_mutex_unlock(&state_mutex);
 
             //Find partner
             want_partner();

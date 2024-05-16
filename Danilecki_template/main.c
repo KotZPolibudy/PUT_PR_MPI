@@ -8,7 +8,7 @@ int LamportClock = 0;
 state_t stan=InRun;
 pthread_t threadKom, threadMon;
 // Mutex - change state
-pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - clock
 pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - partner queue
@@ -21,7 +21,7 @@ int ACKcount = 0;
 
 void finalizuj()
 {
-    pthread_mutex_destroy( &stateMut);
+    pthread_mutex_destroy( &state_mutex);
     pthread_mutex_destroy( &clock_mutex);
     pthread_mutex_destroy( &partner_mutex);
     pthread_mutex_destroy( &pistol_mutex);
