@@ -96,6 +96,25 @@ int find_position(Queue* q, packet_t packet) {
     return -1; // Not found
 }
 
+// Function to get the nth element in the queue
+int get_nth_element(Queue* q, int n) {
+    if (!q->front) {
+        printf("Queue is empty\n");
+        exit(EXIT_FAILURE);
+    }
+    QueueNode* current = q->front;
+    int count = 0;
+    while (current != NULL) {
+        if (count == n) {
+            return current->packet.src;
+        }
+        count++;
+        current = current->next;
+    }
+    printf("Position out of range\n");
+    exit(EXIT_FAILURE);
+}
+
 // Function to display the queue
 void display_queue(Queue* q) {
     QueueNode* current = q->front;

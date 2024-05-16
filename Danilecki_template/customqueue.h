@@ -20,6 +20,7 @@ void insert(Queue* q, packet_t packet);
 void delete_at_position(Queue* q, int position);
 void delete_front(Queue* q);
 int find_position(Queue* q, packet_t packet);
+int get_nth_element(Queue* q, int n);
 void display_queue(Queue* q);
 
 #endif /* CUSTOMQUEUE_H */
