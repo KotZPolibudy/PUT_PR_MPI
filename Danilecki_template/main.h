@@ -27,6 +27,7 @@ extern pthread_t threadKom, threadMon;
 extern pthread_mutex_t state_mutex;
 extern pthread_mutex_t clock_mutex;
 extern pthread_mutex_t ACK_mutex;
+extern pthread_mutex_t queue_mutex;
 extern int ACKcount;
 
 extern Queue* pairing_queue;

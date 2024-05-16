@@ -17,6 +17,8 @@ pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t pistol_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - ACK Count
 pthread_mutex_t ACK_mutex = PTHREAD_MUTEX_INITIALIZER;
+// Mutex - queue operations
+pthread_mutex_t Aqueue_mutex = PTHREAD_MUTEX_INITIALIZER;
 int ACKcount = 0;
 
 void finalizuj()
