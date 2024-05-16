@@ -116,9 +116,8 @@ void *startKomWatek(void *ptr)
             myrole = KILLER;
             partnerID = pakiet.src;
             break;
-        case REMOVE_FROM_QUEUE: //Probably never used, since killer initializes pairing
-            myrole = KILLER;
-            partnerID = pakiet.src;
+        case REMOVE_FROM_QUEUE:
+            
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
