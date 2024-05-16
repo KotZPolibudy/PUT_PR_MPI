@@ -1,9 +1,5 @@
 # Ten plik został wygenerowany automatycznie ze sprawozdania w pliku .tex i może zawierać błędy
 ---
-Note-to-self
-
-Utils i tags chyba już mają co trzeba, teraz comm i main :P 
----
 author:
 - Mikołaj Nowak 151813, Wojciech Kot 151879
 title: |
