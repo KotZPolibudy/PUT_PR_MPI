@@ -106,11 +106,13 @@ void get_pistol(){
 
 void try_killing(){
     while(shots_fired < A) {
+        debug("Szukam pistoletu");
         get_pistol();
         changeState(Shooting);
         shots_fired += 1;
         prey_not_responded = 1;
         int attack = rand() % 20;
+        debug("Uwaga strzelam!!!");
         packet_t *pkt = malloc(sizeof(packet_t));
         pkt->data = attack;
         sendPacket(pkt, partnerID, KILL_ATTEMPT);
@@ -119,12 +121,15 @@ void try_killing(){
             usleep(1000);
         }
         //got confirm, exiting,leaving the pistol
+        debug("Dobra, postrzelane, oddaje pistolet");
         release_pistol();
         changeState(Killer);
         if(my_result == 1){
+            debug("Ha! Zabilem!");
             break;
         }
     }
+    //to nawet nie musi być w if, najwyzej zdubluje zmiane stanu na finished?
     if(my_result != 1){
         //send Finish, as there is no more ammo
         packet_t *pkt = malloc(sizeof(packet_t));
@@ -137,6 +142,21 @@ void try_killing(){
 void do_nothing_basically(){
     //Be a runner, change state?
     usleep(100);
+}
+
+
+void get_debug_partner(){
+    for(int o=0;o<size;o+=2)
+    {
+        if(rank==o){
+            partnerID = o+1;
+            myrole = KILLER;
+        }
+        if(rank==o+1){
+            partnerID = o-1;
+            myrole = RUNNER;
+        }
+    }
 }
 
 
@@ -199,7 +219,8 @@ void mainLoop()
 
             //Find partner
             debug("Ide szukac partnera");
-            want_partner();
+            //want_partner();
+            get_debug_partner();
             debug("Mam partnera");
             MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
             debug("Za bariera - mam partnera ide robic swoje");
@@ -228,17 +249,25 @@ void mainLoop()
                     Przegrane += 1;
                     debug("Przegralem cykl");
                 }
-
+                changeState(Finished);
+                sleep(SEC_IN_STATE);
+                debug("Mamy to, koniec cyklu zabijania");
+            }
+            else{
+                changeState(Finished);
+                sleep(SEC_IN_STATE);
+                debug("Mamy to, koniec cyklu ucieczki");
             }
 
-            changeState(Finished);
-            sleep(SEC_IN_STATE);
-            debug("Mamy to, koniec cyklu");
+
             MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
 
         }
         // podsumowanie cyklu
-        debug("Wygralem tyle o: %d a tyle przegralem %d", Wygrane, Przegrane)
+        if(myrole== KILLER) {
+            debug("Wygralem tyle o: %d a tyle przegralem %d", Wygrane, Przegrane)
+        }
+        usleep(4000);
     }
     free(kolejka_do_odpowiedzi_na_pistolet);
 }
