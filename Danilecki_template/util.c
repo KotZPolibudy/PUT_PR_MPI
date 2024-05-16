@@ -77,23 +77,25 @@ void tick_Lamport_clock(int new)
 }
 
 void broadcast(Queue* q, packet_t *pkt, int tag)
-    {
-        int freepkt=1;
-        if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
-        pkt->src = rank;
-        pthread_mutex_lock(&clock_mutex);
-        LamportClock++;
-        pkt->ts = LamportClock;
-        pthread_mutex_unlock(&clock_mutex);
-        insert(q, *pkt); //sprawdzic czy faktycznie cos wstawia
-        for(int j=0; j<size; j++){
-            if(rank != j){
-                MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
-            }
+{
+    int freepkt=1;
+    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+    pkt->src = rank;
+    pthread_mutex_lock(&clock_mutex);
+    LamportClock++;
+    pkt->ts = LamportClock;
+    pthread_mutex_unlock(&clock_mutex);
+    pthread_mutex_lock(&queue_mutex);
+    insert(q, *pkt); //sprawdzic czy faktycznie cos wstawia
+    pthread_mutex_unlock(&queue_mutex);
+    for(int j=0; j<size; j++){
+        if(rank != j){
+            MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
         }
-        debug("Wysyłam Grupowo %s\n", tag2string( tag));
-        if (freepkt) free(pkt);
     }
+    debug("Wysyłam Grupowo %s\n", tag2string( tag));
+    if (freepkt) free(pkt);
+}
 
 void broadcast2(packet_t *pkt, int tag)
 {

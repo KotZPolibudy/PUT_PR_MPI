@@ -55,6 +55,7 @@ void want_partner()
         pthread_mutex_unlock(&state_mutex);
         pthread_mutex_lock(&ACK_mutex);
         ACKcount = 0;
+        myrole = -1;
         pthread_mutex_unlock(&ACK_mutex);
         //Send requests for others
         pthread_mutex_lock(&state_mutex);

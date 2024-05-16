@@ -15,7 +15,9 @@
 #define KILL_AVOIDED 12
 #define KILL_CONFIRMED 13
 #define PARTNER_REQ 20
-#define PARTNER_ACC 21
+#define PAIRING_ACK 21
+#define YOU_ARE_KILLER 22
+#define YOU_ARE_RUNNER 23
 #define PISTOL_REQ 33
 #define PISTOL_ACC 34
 

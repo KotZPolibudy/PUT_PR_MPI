@@ -26,7 +26,8 @@ void *startKomWatek(void *ptr)
             LamportClock++;
         }
         pthread_mutex_unlock(&clock_mutex);
-
+        packet_t *response;
+        response->src = rank;
         switch ( status.MPI_TAG ) {
 	    case FINISH: 
                 changeState(Finished);
@@ -58,26 +59,38 @@ void *startKomWatek(void *ptr)
             changeState(Killer_won);
         break;
         case PARTNER_REQ:
-            //If someone wants to pair allow them
+            //If someone wants to pair allow them and place them in the queue
+            pthread_mutex_lock(&queue_mutex);
             insert(pairing_queue, pakiet);
-            packet_t ans[1];
-            ans->src = rank;
-            ans->ts = LamportClock;
+            pthread_mutex_unlock(&queue_mutex);
+            response->ts = LamportClock;
             pthread_mutex_lock(&state_mutex);
             if(stan == SupportsPairing)
             {
-                sendPacket(ans, pakiet.src, PARTNER_REQ);
+                sendPacket(response, pakiet.src, PARTNER_REQ);
                 stan = Partner_requested;
             }
             else
             {
-                sendPacket(ans, pakiet.src, PARTNER_REQ);
+                sendPacket(response, pakiet.src, PAIRING_ACK);
             }
             pthread_mutex_unlock(&state_mutex);
-            sendPacket(ans, pakiet.src, PARTNER_ACC);
             break;
-        case PARTNER_ACC:
+        case PAIRING_ACK:
             // Increment ACK counter
+            pthread_mutex_lock(&ACK_mutex);
+            ACKcount++;
+            //Check how many responses we have
+            if(ACKcount == size - 1)
+            {
+                int position = find_position(pairing_queue, *response);
+                //odd-placed processes inform their partners
+                if(position % 2 == 1)
+                {
+
+                }
+            }
+            pthread_mutex_unlock(&ACK_mutex);
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
