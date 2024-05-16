@@ -85,9 +85,10 @@ void delete_at_position(Queue* q, int position) {
 // Function to find the position of an element in the queue
 int find_position(Queue* q, packet_t packet) {
     QueueNode* current = q->front;
+    printf("packet->src %d\n", packet.src);
     int position = 0;
     while (current) {
-        if (current->packet.ts == packet.ts && current->packet.src == packet.src) {
+        if (current->packet.src == packet.src) {
             return position;
         }
         current = current->next;

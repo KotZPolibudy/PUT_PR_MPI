@@ -80,6 +80,10 @@ void *startKomWatek(void *ptr)
             // Increment ACK counter
             pthread_mutex_lock(&ACK_mutex);
             ACKcount++;
+            debug("ile mi zaakceptowalo %d", ACKcount);
+            pthread_mutex_lock(&queue_mutex);
+            display_queue(pairing_queue);
+            pthread_mutex_unlock(&queue_mutex);
             //Check how many responses we have
             if(ACKcount == size - 1)
             {
