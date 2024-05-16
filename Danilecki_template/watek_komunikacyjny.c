@@ -83,14 +83,25 @@ void *startKomWatek(void *ptr)
             //Check how many responses we have
             if(ACKcount == size - 1)
             {
+                pthread_mutex_unlock(&ACK_mutex);
                 int position = find_position(pairing_queue, *response);
                 //odd-placed processes inform their partners
                 if(position % 2 == 1)
                 {
-
+                    myrole = KILLER;
                 }
+                partnerID = get_nth_element(pairing_queue, position-1);
+                //Remove both from queue
+                //Or not
+                sendPacket(response, partnerID, YOU_ARE_RUNNER);
             }
-            pthread_mutex_unlock(&ACK_mutex);
+            else
+            {
+                pthread_mutex_unlock(&ACK_mutex);
+            }
+            break;
+        case YOU_ARE_RUNNER:
+            myrole = RUNNER;
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić

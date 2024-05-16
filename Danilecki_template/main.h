@@ -19,6 +19,8 @@
 
 extern int rank;
 extern int size;
+extern int myrole;
+extern int partnerID;
 extern int LamportClock;
 typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Runner, Finished, Pistol_Requested, Shooting, Killer_won} state_t;
 extern state_t stan;
