@@ -6,7 +6,14 @@ MPI_Datatype MPI_PAKIET_T;
 struct tagNames_t{
     const char *name;
     int tag;
-} tagNames[] = { { "pakiet aplikacyjny", APP_PKT }, { "finish", FINISH}};
+} tagNames[] = {{ "pakiet aplikacyjny", APP_PKT },
+                { "finish", FINISH},
+                {"request parowania", PARTNER_REQ},
+                {"akceptacja parowania", PAIRING_ACK},
+                {"Jestes killerem", YOU_ARE_KILLER},
+                {"Jestes runnerem", YOU_ARE_RUNNER},
+                {"Usun z kolejki", REMOVE_FROM_QUEUE}
+};
 
 const char *tag2string( int tag )
 {
@@ -76,25 +83,7 @@ void tick_Lamport_clock(int new)
 
 }
 
-void broadcast(Queue* q, packet_t *pkt, int tag)
-{
-    int freepkt=1;
-    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
-    pkt->src = rank;
-    pthread_mutex_lock(&clock_mutex);
-    LamportClock++;
-    pkt->ts = LamportClock;
-    pthread_mutex_unlock(&clock_mutex);
-    for(int j=0; j<size; j++){
-        if(rank != j){
-            MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
-        }
-    }
-    debug("Wysyłam Grupowo %s\n", tag2string( tag));
-    if (freepkt) free(pkt);
-}
-
-void broadcast2(packet_t *pkt, int tag)
+void broadcast(packet_t *pkt, int tag)
 {
     int freepkt=1;
     if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}

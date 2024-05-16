@@ -20,6 +20,7 @@
 #define YOU_ARE_RUNNER 23
 #define PISTOL_REQ 33
 #define PISTOL_ACC 34
+#define REMOVE_FROM_QUEUE 100
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();
@@ -29,8 +30,6 @@ void sendPacket(packet_t *pkt, int destination, int tag);
 
 void tick_Lamport_clock();
 
-void broadcast(Queue* q, packet_t *pkt, int tag);
-
-void broadcast2(packet_t *pkt, int tag);
+void broadcast(packet_t *pkt, int tag);
 
 #endif

@@ -47,8 +47,8 @@ Queue* pistol_queue;
 // Need someone to kill or get killed
 void want_partner()
 {
-    packet_t* requestRole = NULL;
-    //Check if we aren't already assigned
+    packet_t* requestRole = malloc(sizeof(packet_t));
+    //Check if we haven't already sent a request
     pthread_mutex_lock(&state_mutex);
     if(stan == SupportsPairing)
     {
@@ -60,7 +60,7 @@ void want_partner()
         //Send requests for others
         pthread_mutex_lock(&state_mutex);
         stan = Partner_requested;
-        broadcast(pairing_queue, requestRole, PARTNER_REQ);
+        broadcast(requestRole, PARTNER_REQ);
     }
     pthread_mutex_unlock(&state_mutex);
     
@@ -93,7 +93,7 @@ void get_pistol(){
     changeState(Pistol_Requested);
     packet_t *reqqq = malloc(sizeof(packet_t));
     reqqq->data = 0;
-    broadcast2(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy, bo idk i nie chce wiedzieć co zmieniłeś XD
+    broadcast(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy, bo idk i nie chce wiedzieć co zmieniłeś XD
     while(pistolREQ_res < size - P){ //zaczynamy od 1, bo od siebie, więc nie trzeba +-1 (chyba)
         usleep(1000);
     }
@@ -142,12 +142,18 @@ void mainLoop()
     pairing_queue = create_queue();
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
+    pthread_mutex_lock(&state_mutex);
+    stan = SupportsPairing;
+    pthread_mutex_unlock(&state_mutex);
     // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloc, bo jak to zadziała to tylko przypadkiem
     // kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
     // sugeruje uzyc mojego
     pistol_queue = create_queue();
     //for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
-
+    while(1)
+    {
+        want_partner();
+    }
     while (stan != InFinish) {
         /*
          * //Danilecki template
