@@ -6,10 +6,10 @@ MPI_Datatype MPI_PAKIET_T;
 struct tagNames_t{
     const char *name;
     int tag;
-} tagNames[] = {{ "pakiet aplikacyjny", APP_PKT },
-                { "finish", FINISH},
-                {"request parowania", PARTNER_REQ},
-                {"akceptacja parowania", PAIRING_ACK},
+} tagNames[] = {{"pakiet aplikacyjny", APP_PKT },
+                {"finish", FINISH},
+                {"chec parowania", PARTNER_REQ},
+                {"potwierdzam ze mozesz sie parowac", PAIRING_ACK},
                 {"Jestes killerem", YOU_ARE_KILLER},
                 {"Jestes runnerem", YOU_ARE_RUNNER},
                 {"Usun z kolejki", REMOVE_FROM_QUEUE}

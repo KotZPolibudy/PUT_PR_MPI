@@ -15,7 +15,7 @@ void *startKomWatek(void *ptr)
     /* Obrazuje pętlę odbierającą pakiety o różnych typach */
     while ( stan!=InFinish )
     {
-	    debug("czekam na recv");
+	    //debug("czekam na recv");
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         //Update clock
         pthread_mutex_lock(&clock_mutex);
@@ -60,7 +60,6 @@ void *startKomWatek(void *ptr)
             changeState(Killer_won);
         break;
         case PARTNER_REQ:
-        debug("Dostalem pytanie o partnera od %d", pakiet.src);
         //If someone wants to pair allow them and place them in the queue
         pthread_mutex_lock(&queue_mutex);
         insert(pairing_queue, pakiet);
@@ -79,7 +78,6 @@ void *startKomWatek(void *ptr)
         }
             break;
         case PAIRING_ACK:
-        debug("Dostalem potwierdzenie na pytanie o partnera od %d", pakiet.src);
             // Increment ACK counter
             pthread_mutex_lock(&ACK_mutex);
             ACKcount++;
@@ -90,7 +88,6 @@ void *startKomWatek(void *ptr)
                 pthread_mutex_unlock(&ACK_mutex);
                 pthread_mutex_lock(&queue_mutex);
                 display_queue(pairing_queue);
-                pthread_mutex_unlock(&queue_mutex);
                 int position = find_position(pairing_queue, *response);
                 debug("Moja pozycja to %d", position);
                 //odd-placed processes inform their partners
@@ -98,9 +95,13 @@ void *startKomWatek(void *ptr)
                 {
                     myrole = KILLER;
                     partnerID = get_nth_element(pairing_queue, position-1);
-                    //Remove both from queue
-                    //Or not
+                    pthread_mutex_unlock(&queue_mutex);
                     sendPacket(response, partnerID, YOU_ARE_RUNNER);
+                    broadcast(response, REMOVE_FROM_QUEUE);
+                }
+                else
+                {
+                    pthread_mutex_unlock(&queue_mutex);
                 }
             }
             else
@@ -111,13 +112,20 @@ void *startKomWatek(void *ptr)
         case YOU_ARE_RUNNER:
             myrole = RUNNER;
             partnerID = pakiet.src;
+            broadcast(response, REMOVE_FROM_QUEUE);
             break;
         case YOU_ARE_KILLER: //Probably never used, since killer initializes pairing
             myrole = KILLER;
             partnerID = pakiet.src;
             break;
         case REMOVE_FROM_QUEUE:
-            
+        debug("%d prosi o usuniecie z kolejki", pakiet.src);
+            pthread_mutex_lock(&queue_mutex);
+            int position = find_position(pairing_queue, pakiet);
+            delete_at_position(pairing_queue, position);
+            debug("kolejka teraz wyglada tak");
+            display_queue(pairing_queue);
+            pthread_mutex_unlock(&queue_mutex);
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić

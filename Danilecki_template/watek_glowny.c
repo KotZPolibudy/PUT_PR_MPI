@@ -131,7 +131,7 @@ void try_killing(){
 
 void do_nothing_basically(){
     //Be a runner, change state?
-    usleep(100);
+    usleep(9000000);
 }
 
 
@@ -153,7 +153,12 @@ void mainLoop()
     while(1)
     {
         want_partner();
-        break;
+        //debug("skoczylem");
+        //do_nothing_basically();
+        //debug("poczekalem");
+        //display_queue(pairing_queue);
+        //do_nothing_basically();
+        //break;
     }
     while(1);
     while (stan != InFinish) {
