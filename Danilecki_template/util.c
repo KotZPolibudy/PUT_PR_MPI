@@ -93,9 +93,7 @@ void broadcast(packet_t *pkt, int tag)
     pkt->ts = LamportClock;
     pthread_mutex_unlock(&clock_mutex);
     for(int j=0; j<size; j++){
-        if(rank != j){
-            MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
-        }
+        MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
     }
     debug("Wysyłam Grupowo %s\n", tag2string( tag));
     if (freepkt) free(pkt);
