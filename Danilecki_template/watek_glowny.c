@@ -150,11 +150,13 @@ void mainLoop()
     // sugeruje uzyc mojego
     pistol_queue = create_queue();
     //for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
-    while(1)
+    /*while(1) //todo co to jest? XD
     {
         want_partner();
     }
+     */
     while (stan != InFinish) {
+        MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
         /*
          * //Danilecki template
         int perc = random()%100; 
@@ -182,14 +184,19 @@ void mainLoop()
         printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", LamportClock, rank, iteration);
         for (int current_cycle = 0; current_cycle < C; current_cycle++)
         {
+            MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
+            debug("Zaczynam");
             //Refresh data
             myrole = -1;
-            pthread_mutex_lock(&state_mutex);
+            //pthread_mutex_lock(&state_mutex); /stary, ale changestate ma mutexa w środku, to robi deadlock
             changeState(SupportsPairing);
-            pthread_mutex_unlock(&state_mutex);
+            //pthread_mutex_unlock(&state_mutex);
 
             //Find partner
+            debug("Ide szukac partnera");
             want_partner();
+            debug("Mam partnera");
+            MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
             //killers kill, runners "run"
             if(myrole == KILLER){
                 changeState(Killer);
@@ -199,27 +206,33 @@ void mainLoop()
                 changeState(Runner);
                 do_nothing_basically();
             }
+            debug("Zrobilem swoje");
+            MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
+
             //Results
             if(myrole == KILLER){
-                //todo
                 //podsumowanie - dopisz wynik do jakiejś tablicy, żeby było na podsumowanie cyklu
                 if (stan == Killer_won){
                     //Res[current_cycle] = 1;
                     Wygrane += 1;
+                    debug("Wygralem cykl");
                 }
                 else{
                     //Res[current_cycle] = 0;
                     Przegrane += 1;
+                    debug("Przegralem cykl");
                 }
 
             }
 
             changeState(Finished);
             sleep(SEC_IN_STATE);
+            debug("Mamy to, koniec cyklu");
+            MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
 
         }
         // podsumowanie cyklu
-        //todo Printf ile wygranych ile przegranych
+        debug("Wygralem tyle o: %d a tyle przegralem %d", Wygrane, Przegrane)
     }
     free(kolejka_do_odpowiedzi_na_pistolet);
 }

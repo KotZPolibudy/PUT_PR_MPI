@@ -3,6 +3,7 @@
 #include "util.h"
 #include "customqueue.h"
 
+extern int pistolREQ_res;
 
 /* wątek komunikacyjny; zajmuje się odbiorem i reakcją na komunikaty */
 void *startKomWatek(void *ptr)
@@ -15,7 +16,7 @@ void *startKomWatek(void *ptr)
     /* Obrazuje pętlę odbierającą pakiety o różnych typach */
     while ( stan!=InFinish )
     {
-	    debug("czekam na recv");
+	    // debug("czekam na recv");
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         //Update clock
         pthread_mutex_lock(&clock_mutex);
@@ -37,7 +38,6 @@ void *startKomWatek(void *ptr)
                 debug("Dostałem pakiet od %d z danymi %d",pakiet.src, pakiet.data);
 	    break;
         case KILL_ATTEMPT:
-            //todo
             int def = rand()%18;
             packet_t *res = malloc(sizeof(packet_t));
             res -> data = def;
@@ -115,14 +115,11 @@ void *startKomWatek(void *ptr)
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-            //todo
-            //pthread_mutex_lock( &pistol_mutex ); -- niepotrzebne!
             if(stan!= Pistol_Requested && stan != Shooting) {
                 // zaakceptuj, że ktoś bierze
                 packet_t *res = malloc(sizeof(packet_t));
                 res->data = 0;
                 sendPacket(res, pakiet.src, PISTOL_ACC);
-                //pthread_mutex_unlock(&pistol_mutex);
             }
             else{
                 //kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
@@ -130,8 +127,8 @@ void *startKomWatek(void *ptr)
             }
             break;
         case PISTOL_ACC:
-                //todo
-
+                pistolREQ_res += 1;
+                //debug("mam potwierdzenie o broni");
                 break;
 	    default:
             debug("Nieznany typ wiadomosci! %d , %d, %d ",pakiet.src, pakiet.data, status.MPI_TAG);
