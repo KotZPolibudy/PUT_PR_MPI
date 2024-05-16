@@ -20,7 +20,7 @@
 extern int rank;
 extern int size;
 extern int LamportClock;
-typedef enum {InRun, InMonitor, InSend, InFinish, Waiting_for_partner, Partner_requested, Killer, Runner, Finished, Pistol_Requested, Shooting} state_t;
+typedef enum {InRun, InMonitor, InSend, InFinish, Waiting_for_partner, Partner_requested, Killer, Runner, Finished, Pistol_Requested, Shooting, Killer_won} state_t;
 extern state_t stan;
 extern pthread_t threadKom, threadMon;
 

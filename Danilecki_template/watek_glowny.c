@@ -9,6 +9,10 @@ int P = 5;
 int C = 3;
 // Number of ammo
 int A = 3;
+//Tablica wynikow cykli
+//int Res[C];
+
+
 // My process ID - assigned by MPI
 // int myPID;  //rank
 // Total process inside world - assigned by MPI
@@ -28,6 +32,7 @@ int shots_fired = 0;
 int prey_not_responded = 1;
 int ile_requestow_po_pistolet = 0;
 int* kolejka_do_odpowiedzi_na_pistolet;
+int Wygrane = 0, Przegrane =0;
 
 // Paring
 int waiting = -1;
@@ -73,7 +78,7 @@ void release_pistol(){
     for(int i = 0; i < ile_requestow_po_pistolet; i++){
         packet_t *res = malloc(sizeof(packet_t));
         res->data = 0;
-        sendPacket(res, kolejka_do_odpowiedzi_na_pistolet[i], PISTOL_ACC); //do kazdego w kolejce
+        sendPacket(res, kolejka_do_odpowiedzi_na_pistolet[i], PISTOL_ACC); //do każdego w kolejce
     }
 
 };
@@ -83,8 +88,8 @@ void get_pistol(){
     changeState(Pistol_Requested);
     packet_t *reqqq = malloc(sizeof(packet_t));
     reqqq->data = 0;
-    broadcast2(reqqq, PISTOL_REQ); //todo broadcast dostał kolejke, trzeba by coś podać w ten argument
-    while(pistolREQ_res < size - P){ //todo check the math, czy nie jakies +1 albo -1
+    broadcast2(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy, bo idk i nie chce wiedzieć co zmieniłeś XD
+    while(pistolREQ_res < size - P){ //zaczynamy od 1, bo od siebie, więc nie trzeba +-1 (chyba)
         usleep(1000);
     }
 
@@ -132,7 +137,7 @@ void mainLoop()
     pairing_queue = create_queue();
     //MPI_Comm_size(MPI_COMM_WORLD, &size);
     //MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
-    // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloca bo jak to zadziała to tylko przypadkiem
+    // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloc, bo jak to zadziała to tylko przypadkiem
     kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
     for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
 
@@ -183,12 +188,23 @@ void mainLoop()
             if(myrole == KILLER){
                 //todo
                 //podsumowanie - dopisz wynik do jakiejś tablicy, żeby było na podsumowanie cyklu
+                if (stan == Killer_won){
+                    //Res[current_cycle] = 1;
+                    Wygrane += 1;
+                }
+                else{
+                    //Res[current_cycle] = 0;
+                    Przegrane += 1;
+                }
+
             }
 
             changeState(Finished);
             sleep(SEC_IN_STATE);
+
         }
         // podsumowanie cyklu
+        //todo Printf ile wygranych ile przegranych
     }
     free(kolejka_do_odpowiedzi_na_pistolet);
 }

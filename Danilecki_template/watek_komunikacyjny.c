@@ -55,6 +55,7 @@ void *startKomWatek(void *ptr)
         // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
         //my_result = 1;
         //prey_not_responded = 1;
+            changeState(Killer_won);
         break;
         case PARTNER_REQ:
             //If someone wants to pair allow them
@@ -95,7 +96,7 @@ void *startKomWatek(void *ptr)
             }
             break;
         case PISTOL_ACC:
-
+                //todo
 
                 break;
 	    default:
