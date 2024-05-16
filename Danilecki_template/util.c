@@ -70,6 +70,7 @@ void changeState( state_t newState )
     pthread_mutex_unlock( &state_mutex );
 }
 
+//ta funkcja jest, ale idk czemu jakos jej nie uzywamy
 void tick_Lamport_clock(int new)
 { //default na 0, bo przy wysylaniu np. nie ma nowej wartosci
     pthread_mutex_lock( &clock_mutex );

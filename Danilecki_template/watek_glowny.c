@@ -42,7 +42,7 @@ int received_friendship_response = 1; // start with yourself!
 int pistolREQ_res = 1; // start with yourself!
 
 Queue* pairing_queue;
-Queue* pistol_queue;
+//Queue* pistol_queue; //zrobione obejściem wcześniej, szkoda zmieniać i bawić się w queue
 
 // Need someone to kill or get killed
 void want_partner()
@@ -93,7 +93,10 @@ void get_pistol(){
     changeState(Pistol_Requested);
     packet_t *reqqq = malloc(sizeof(packet_t));
     reqqq->data = 0;
-    broadcast(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy, bo idk i nie chce wiedzieć co zmieniłeś XD
+    // broadcast(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy - deprecated
+    pistolREQ_res = 1; //zaczynamy od 1, bo nawet jak piszemy też do siebie to sobie nie damy, bo sie staramy...
+    // (trzeba by broadcasta zmienić żeby do siebie nie pisał), żeby to wyżej zmienić.
+    broadcast(reqqq, PISTOL_REQ);
     while(pistolREQ_res < size - P){ //zaczynamy od 1, bo od siebie, więc nie trzeba +-1 (chyba)
         usleep(1000);
     }
@@ -102,7 +105,7 @@ void get_pistol(){
 
 
 void try_killing(){
-    if(shots_fired < A) {
+    while(shots_fired < A) {
         get_pistol();
         changeState(Shooting);
         shots_fired += 1;
@@ -118,9 +121,11 @@ void try_killing(){
         //got confirm, exiting,leaving the pistol
         release_pistol();
         changeState(Killer);
-
+        if(my_result == 1){
+            break;
+        }
     }
-    else{
+    if(my_result != 1){
         //send Finish, as there is no more ammo
         packet_t *pkt = malloc(sizeof(packet_t));
         pkt->data = 0;
@@ -148,7 +153,7 @@ void mainLoop()
     // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloc, bo jak to zadziała to tylko przypadkiem
     // kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
     // sugeruje uzyc mojego
-    pistol_queue = create_queue();
+    //pistol_queue = create_queue(); //not needed?
     //for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
     /*while(1) //todo co to jest? XD
     {
@@ -197,6 +202,7 @@ void mainLoop()
             want_partner();
             debug("Mam partnera");
             MPI_Barrier(MPI_COMM_WORLD); //testowe bariery!
+            debug("Za bariera - mam partnera ide robic swoje");
             //killers kill, runners "run"
             if(myrole == KILLER){
                 changeState(Killer);
