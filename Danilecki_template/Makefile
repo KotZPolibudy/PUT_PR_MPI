@@ -13,4 +13,7 @@ clean:
 	rm main a.out
 
 run: main
-	mpiexec -oversubscribe -np 4 ./main
+	mpiexec -oversubscribe -np 8 ./main
+
+run_2: main
+	mpiexec -oversubscribe -np 2 ./main

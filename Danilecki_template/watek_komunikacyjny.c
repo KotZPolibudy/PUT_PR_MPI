@@ -123,13 +123,17 @@ void *startKomWatek(void *ptr)
             break;
         case PISTOL_REQ:
             // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
+            debug("Dostalem zapytanie o bron od %d", pakiet.src);
             if(stan!= Pistol_Requested && stan != Shooting) {
                 // zaakceptuj, że ktoś bierze
                 packet_t *res = malloc(sizeof(packet_t));
                 res->data = 0;
+                debug("Niech ma!");
                 sendPacket(res, pakiet.src, PISTOL_ACC);
+                free(res);
             }
             else{
+                debug("Musi se jeszcze poczekac!");
                 kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
                 ile_requestow_po_pistolet += 1;
             }
