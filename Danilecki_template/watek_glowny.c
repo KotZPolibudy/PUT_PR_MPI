@@ -116,6 +116,9 @@ void try_killing(){
         packet_t *pkt = malloc(sizeof(packet_t));
         pkt->data = attack;
         sendPacket(pkt, partnerID, KILL_ATTEMPT);
+        // todo to sie wywala bo ma "zły partnerID" ???
+        //MPI_ERR_RANK: invalid rank
+
         //wait for confirmation
         while(prey_not_responded){
             usleep(1000);
