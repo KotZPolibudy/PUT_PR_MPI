@@ -103,46 +103,7 @@ Przekaż wiadomość FIN.
 Na samym początku zabawy procesy muszą się dobrać w pary (zabójca +
 ofiara).
 
-## Wersja nieoptymalna
-
-Do dobierania procesów w pary można użyć algorytmu Lamporta z pojedyńczą
-sekcją krytyczną. W sekcji krytycznej znajduje się zmienna:
-
-    int waiting := -1;
-
-Oznaczająca ID procesu czekającego na partnera. Można założyć, że żaden
-proces nie może mieć ujemnego ID, dlatego na samym początku zmienna
-waiting przyjmuje wartość -1, bo nikt aktualnie nie czeka na parę.\
-Pierwszy proces wchodzi do sekcji krytycznej, ustawia wartość zmiennej
-waiting na swoje ID i następnie wychodzi z niej. Czeka on wtedy na
-odpowiedź od następnego procesu, który wkrótce stanie się jego parą.\
-Jeśli kolejny proces w sekcji krytycznej widzi, że zmienna waiting
-posiada zapamiętane jakieś ID, to zapamiętuje wartość tego ID, ustawia
-waiting na -1 i zwalnia jak najszybciej sekcję krytyczną.\
-Po opuszczeniu losuje sobie rolę (zabójca lub ofiara) i wysyła wiadomość
-do swojej pary, w której przekazuje swój identyfikator oraz rolę
-(partner będzie mieć przeciwną).
-
-``` {.numberLines numbers="left" xleftmargin="5mm"}
-global int waiting := -1;
-local int time := 0;
-local int ID;
-
-function PAROWANIE():
-    wyślij (REQ, time) do wszystkich poza mną
-    if (odpowiedzi mają większe znaczniki czasowe OR żądanie na początku kolejki)
-        wejdź do sekcji krytycznej
-        if(waiting == -1):
-            waiting = ID;
-            wyjdź z sekcji krytycznej
-            czekaj na wiadomość
-        else:
-            local int para := waiting;
-            waiting := -1;
-            wyjdź z sekcji krytycznej
-            wylosuj rolę
-            wyślij do para wiadomość o roli i swoim ID
-```
+## Tu była wersja nieoptymalna, ale nie zdała testu ;)
 
 ## Wersja uwzględniająca znajomość liczby procesów N
 
