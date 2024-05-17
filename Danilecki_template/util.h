@@ -1,7 +1,6 @@
 #ifndef UTILH
 #define UTILH
 #include "packet.h"
-#include "customqueue.h"
 #include "main.h"
 
 
@@ -18,9 +17,10 @@
 #define PAIRING_ACK 21
 #define YOU_ARE_KILLER 22
 #define YOU_ARE_RUNNER 23
-#define PISTOL_REQ 33
-#define PISTOL_ACC 34
-#define REMOVE_FROM_QUEUE 100
+#define GUN_REQ 33
+#define GUN_ACC 34
+#define REMOVE_FROM_PAIRING_QUEUE 100
+#define REMOVE_FROM_GUN_QUEUE 101
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();
@@ -29,7 +29,8 @@ void inicjuj_typ_pakietu();
 void sendPacket(packet_t *pkt, int destination, int tag);
 
 void tick_Lamport_clock();
-
+typedef enum {FREE, REQUESTING, FINISHED} state_t;
+extern state_t stan;
 void broadcast(packet_t *pkt, int tag);
 
 #endif

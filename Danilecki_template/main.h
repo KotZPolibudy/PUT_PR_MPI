@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
-#include "customqueue.h"
+
 #include "util.h"
 /* boolean */
 #define TRUE 1
@@ -22,8 +22,6 @@ extern int size;
 extern int myrole;
 extern int partnerID;
 extern int LamportClock;
-typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Runner, Finished, Pistol_Requested, Shooting, Killer_won} state_t;
-extern state_t stan;
 extern pthread_t threadKom, threadMon;
 
 extern pthread_mutex_t state_mutex;
@@ -31,9 +29,6 @@ extern pthread_mutex_t clock_mutex;
 extern pthread_mutex_t ACK_mutex;
 extern pthread_mutex_t queue_mutex;
 extern int ACKcount;
-
-extern Queue* pairing_queue;
-extern Queue* pistol_queue;
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta 

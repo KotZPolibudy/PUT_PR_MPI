@@ -1,11 +1,10 @@
 #include "main.h"
 #include "watek_glowny.h"
 #include "watek_komunikacyjny.h"
-#include "customqueue.h"
 
 int rank = 0, size; // rank == MyPID , size == WORLD_SIZE
 int LamportClock = 0;
-state_t stan=InRun;
+//state_t stan=InRun;
 pthread_t threadKom, threadMon;
 // Mutex - change state
 pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -65,13 +64,12 @@ int main(int argc, char **argv)
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
-    srand(rank);
     inicjuj_typ_pakietu(); // tworzy typ pakietu
     //packet_t pkt;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    pthread_create( &threadKom, NULL, startKomWatek , &rank);
-
+    srand(rank);
+    pthread_create( &threadKom, NULL, startKomWatek , 0);
     mainLoop();
     
     finalizuj();

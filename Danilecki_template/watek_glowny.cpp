@@ -1,7 +1,6 @@
 #include "main.h"
 #include "watek_glowny.h"
 #include "util.h"
-#include "customqueue.h"
 
 // Number of pistols
 int P = 5;
@@ -41,29 +40,13 @@ int received_friendship_response = 1; // start with yourself!
 // Pistols
 int pistolREQ_res = 1; // start with yourself!
 
-Queue* pairing_queue;
-Queue* pistol_queue;
-
 // Need someone to kill or get killed
-void want_partner()
+void acquire_partner()
 {
-    packet_t* requestRole = malloc(sizeof(packet_t));
-    //Check if we haven't already sent a request
-    pthread_mutex_lock(&state_mutex);
-    if(stan == SupportsPairing)
-    {
-        pthread_mutex_unlock(&state_mutex);
-        pthread_mutex_lock(&ACK_mutex);
-        ACKcount = 0;
-        myrole = -1;
-        pthread_mutex_unlock(&ACK_mutex);
-        //Send requests for others
-        pthread_mutex_lock(&state_mutex);
-        stan = Partner_requested;
-        broadcast(requestRole, PARTNER_REQ);
-    }
-    pthread_mutex_unlock(&state_mutex);
-    
+    pthread_mutex_lock(&ACK_mutex);
+    ACKcount = 0;
+    pthread_mutex_unlock(&ACK_mutex);
+    broadcast(0, PARTNER_REQ);
     //wait for getting role assigned
     while(myrole == -1);
     if(myrole == KILLER) {
@@ -81,19 +64,23 @@ void want_partner()
 void release_pistol(){
     changeState(Killer); //od teraz odpowiadaj pozytywnie na Requesty i odpowiedz na wszystkie "pending" requesty
     for(int i = 0; i < ile_requestow_po_pistolet; i++){
-        packet_t *res = malloc(sizeof(packet_t));
+        packet_t *res = (packet_t *)malloc(sizeof(packet_t));
         res->data = 0;
-        sendPacket(res, kolejka_do_odpowiedzi_na_pistolet[i], PISTOL_ACC); //do każdego w kolejce
+        sendPacket(res, kolejka_do_odpowiedzi_na_pistolet[i], GUN_ACC); //do każdego w kolejce
     }
 
 };
 
 
-void get_pistol(){
-    changeState(Pistol_Requested);
-    packet_t *reqqq = malloc(sizeof(packet_t));
-    reqqq->data = 0;
-    broadcast(reqqq, PISTOL_REQ); // broadcast 2 to dwuargumentowy, bo idk i nie chce wiedzieć co zmieniłeś XD
+void get_pistol()
+{
+    pthread_mutex_lock(&ACK_mutex);
+    ACKcount = 0;
+    pthread_mutex_unlock(&ACK_mutex);
+    pthread_mutex_lock(&state_mutex);
+    stan = REQ;
+    pthread_mutex_unlock(&state_mutex);
+    broadcast(0, GUN_REQ);
     while(pistolREQ_res < size - P){ //zaczynamy od 1, bo od siebie, więc nie trzeba +-1 (chyba)
         usleep(1000);
     }
@@ -101,14 +88,16 @@ void get_pistol(){
 }
 
 
-void try_killing(){
+void try_killing()
+{
+    get_pistol();
     if(shots_fired < A) {
         get_pistol();
         changeState(Shooting);
         shots_fired += 1;
         prey_not_responded = 1;
         int attack = rand() % 20;
-        packet_t *pkt = malloc(sizeof(packet_t));
+        packet_t *pkt = (packet_t *)malloc(sizeof(packet_t));
         pkt->data = attack;
         sendPacket(pkt, partnerID, KILL_ATTEMPT);
         //wait for confirmation
@@ -122,7 +111,7 @@ void try_killing(){
     }
     else{
         //send Finish, as there is no more ammo
-        packet_t *pkt = malloc(sizeof(packet_t));
+        packet_t *pkt = (packet_t *)malloc(sizeof(packet_t));
         pkt->data = 0;
         sendPacket(pkt, partnerID, FINISH);
     }
@@ -131,83 +120,34 @@ void try_killing(){
 
 void do_nothing_basically(){
     //Be a runner, change state?
-    usleep(9000000);
+    usleep(1000000);
 }
 
 
 void mainLoop()
 {
     srandom(rank);
-    //int tag;
-    pairing_queue = create_queue();
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank); // chyba potrzebne :D
-    pthread_mutex_lock(&state_mutex);
-    stan = SupportsPairing;
-    pthread_mutex_unlock(&state_mutex);
-    // int kolejka_do_odpowiedzi_na_pistolet[size]; // ta linijka jest straszna i należy się jej pozbyć, zamienić na odpowiedniego malloc, bo jak to zadziała to tylko przypadkiem
-    // kolejka_do_odpowiedzi_na_pistolet = (int*)malloc(size*sizeof(int));
-    // sugeruje uzyc mojego
-    pistol_queue = create_queue();
-    //for (int i = 0; i < size; i++) {kolejka_do_odpowiedzi_na_pistolet[i] = -1;} //Fill this with "-1"
-    while(1)
+    changeState(SupportsPairing);
+    iteration = 0;
+    while (stan != InFinish)
     {
-        want_partner();
-        //debug("skoczylem");
-        //do_nothing_basically();
-        //debug("poczekalem");
-        //display_queue(pairing_queue);
-        //do_nothing_basically();
-        //break;
-    }
-    while(1);
-    while (stan != InFinish) {
-        /*
-         * //Danilecki template
-        int perc = random()%100; 
-
-        if (perc<STATE_CHANGE_PROB) {
-            if (stan==InRun) {
-		debug("Zmieniam stan na wysyłanie");
-		changeState( InSend );
-		packet_t *pkt = malloc(sizeof(packet_t));
-		pkt->data = perc;
-		perc = random()%100;
-		tag = ( perc < 25 ) ? FINISH : APP_PKT;
-		debug("Perc: %d", perc);
-		
-		sendPacket( pkt, (rank+1)%size, tag);
-		changeState( InRun );
-		debug("Skończyłem wysyłać");
-            } else {
-            }
-        }
-        sleep(SEC_IN_STATE);
-         */
-
         iteration++;
         printf("[%05d][%02d] -- CODE RUN -- ITERATION %02d --\n", LamportClock, rank, iteration);
+        //Refresh data
+        myrole = -1;
+        changeState(SupportsPairing);
+        //get a partner
+        acquire_partner();
+        do_nothing_basically(); //wait to see fesults in a similar place
+        debug("%d", partnerID);
         for (int current_cycle = 0; current_cycle < C; current_cycle++)
         {
-            //Refresh data
-            myrole = -1;
-            pthread_mutex_lock(&state_mutex);
-            changeState(SupportsPairing);
-            pthread_mutex_unlock(&state_mutex);
+            //Obtain results
+            if(myrole == KILLER)
+            {
 
-            //Find partner
-            want_partner();
-            //killers kill, runners "run"
-            if(myrole == KILLER){
-                changeState(Killer);
-                try_killing();
-            }
-            else{
-                changeState(Runner);
-                do_nothing_basically();
-            }
-            //Results
-            if(myrole == KILLER){
                 //todo
                 //podsumowanie - dopisz wynik do jakiejś tablicy, żeby było na podsumowanie cyklu
                 if (stan == Killer_won){

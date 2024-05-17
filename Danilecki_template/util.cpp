@@ -1,6 +1,5 @@
 #include "main.h"
 #include "util.h"
-#include "customqueue.h"
 MPI_Datatype MPI_PAKIET_T;
 
 struct tagNames_t{
@@ -12,12 +11,14 @@ struct tagNames_t{
                 {"potwierdzam ze mozesz sie parowac", PAIRING_ACK},
                 {"Jestes killerem", YOU_ARE_KILLER},
                 {"Jestes runnerem", YOU_ARE_RUNNER},
-                {"Usun z kolejki", REMOVE_FROM_QUEUE}
+                {"Usun z kolejki do parowania", REMOVE_FROM_PAIRING_QUEUE}
 };
 
-const char *tag2string( int tag )
+state_t stan=InRun;
+
+const char *const tag2string( int tag )
 {
-    for (int i=0; i <sizeof(tagNames)/sizeof(struct tagNames_t);i++) {
+    for (int i=0; i < (int)sizeof(tagNames)/sizeof(struct tagNames_t);i++) {
 	if ( tagNames[i].tag == tag )  return tagNames[i].name;
     }
     return "<unknown>";
@@ -48,14 +49,14 @@ void inicjuj_typ_pakietu()
 void sendPacket(packet_t *pkt, int destination, int tag)
 {
     int freepkt=0;
-    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+    if (pkt==0) { pkt = (packet_t *)malloc(sizeof(packet_t)); freepkt=1;}
     pkt->src = rank;
     pthread_mutex_lock(&clock_mutex);
     LamportClock++;
     pkt->ts = LamportClock;
-    pthread_mutex_unlock(&clock_mutex);
     MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
-    debug("Wysyłam %s do %d\n", tag2string( tag), destination);
+    pthread_mutex_unlock(&clock_mutex);
+    debug("Wysyłam %s do %d w czasie %d\n", tag2string( tag), destination, pkt->ts);
     if (freepkt) free(pkt);
 }
 
@@ -70,11 +71,11 @@ void changeState( state_t newState )
     pthread_mutex_unlock( &state_mutex );
 }
 
-void tick_Lamport_clock(int new)
+void tick_Lamport_clock(int nowy)
 { //default na 0, bo przy wysylaniu np. nie ma nowej wartosci
     pthread_mutex_lock( &clock_mutex );
-    if(new > LamportClock){
-        LamportClock = new +1;
+    if(nowy > LamportClock){
+        LamportClock = nowy + 1;
     }
     else{
         LamportClock += 1;
@@ -86,16 +87,16 @@ void tick_Lamport_clock(int new)
 void broadcast(packet_t *pkt, int tag)
 {
     int freepkt=1;
-    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+    if (pkt==0) { pkt = (packet_t *)malloc(sizeof(packet_t)); freepkt=1;}
     pkt->src = rank;
     pthread_mutex_lock(&clock_mutex);
     LamportClock++;
     pkt->ts = LamportClock;
-    pthread_mutex_unlock(&clock_mutex);
     for(int j=0; j<size; j++){
         MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
     }
-    debug("Wysyłam Grupowo %s\n", tag2string( tag));
+    pthread_mutex_unlock(&clock_mutex);
+    debug("Wysyłam Grupowo %s w czasie %d\n", tag2string(tag), pkt->ts);
     if (freepkt) free(pkt);
 }
 
