@@ -10,10 +10,6 @@ pthread_t threadKom, threadMon;
 pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - clock
 pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;
-// Mutex - partner queue
-pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;
-// Mutex - pistol queue
-pthread_mutex_t pistol_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - ACK Count
 pthread_mutex_t ACK_mutex = PTHREAD_MUTEX_INITIALIZER;
 // Mutex - queue operations
@@ -22,10 +18,9 @@ int ACKcount = 0;
 
 void finalizuj()
 {
-    pthread_mutex_destroy( &state_mutex);
-    pthread_mutex_destroy( &clock_mutex);
-    pthread_mutex_destroy( &partner_mutex);
-    pthread_mutex_destroy( &pistol_mutex);
+    pthread_mutex_destroy(&state_mutex);
+    pthread_mutex_destroy(&clock_mutex);
+    pthread_mutex_destroy(&ACK_mutex);
     /* Czekamy, aż wątek potomny się zakończy */
     println("czekam na wątek \"komunikacyjny\"\n" );
     pthread_join(threadKom,NULL);

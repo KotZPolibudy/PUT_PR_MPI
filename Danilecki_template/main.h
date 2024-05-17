@@ -17,18 +17,21 @@
 
 #define ROOT 0
 
+extern int P;
 extern int rank;
 extern int size;
 extern int myrole;
 extern int partnerID;
 extern int LamportClock;
 extern pthread_t threadKom, threadMon;
+extern int score;
+extern int roundsfinished;
 
 extern pthread_mutex_t state_mutex;
 extern pthread_mutex_t clock_mutex;
 extern pthread_mutex_t ACK_mutex;
-extern pthread_mutex_t queue_mutex;
 extern int ACKcount;
+extern bool haveme;
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta 

@@ -3,6 +3,7 @@
 #include "util.h"
 #include <vector>
 
+
 int position(std::vector<std::pair<int, int>> queue, int who)
 {
 	for(int i=0; i<(int)queue.size(); i++)
@@ -29,15 +30,15 @@ void *startKomWatek(void *ptr)
 	std::vector<std::pair<int, int>> gunQueue;
     MPI_Status status;
     packet_t pakiet;
-    packet_t *response = (packet_t *)malloc(sizeof(packet_t));
-    response->src = rank;
-    response->data = 0;
+    //packet_t *response = (packet_t *)malloc(sizeof(packet_t));
+    //response->src = rank;
+    //response->data = 0;
     /* Obrazuje pętlę odbierającą pakiety o różnych typach */
     while (stan != FINISH)
     {
         int placement = 0;
+        int defence = 0;
         MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        //displayQUEUE(pairingQueue);
         //Update clock
         pthread_mutex_lock(&clock_mutex);
         if(pakiet.ts > LamportClock)
@@ -50,35 +51,9 @@ void *startKomWatek(void *ptr)
         }
         pthread_mutex_unlock(&clock_mutex);
         switch ( status.MPI_TAG ) {
-	    /*case FINISH: 
-                changeState(Finished);
+	    case FINISH: 
+                changeState(FINISHED);
 	    break;
-	    case APP_PKT: 
-                debug("Dostałem pakiet od %d z danymi %d",pakiet.src, pakiet.data);
-	    break;
-        case KILL_ATTEMPT:
-            //todo
-            int defence = rand()%18;
-            res -> data = defence;
-            if (defence > pakiet.data){
-                sendPacket(res, pakiet.src, KILL_AVOIDED);
-            }
-            else{
-                sendPacket(res, pakiet.src, KILL_AVOIDED);
-                changeState(Finished);
-            }
-        break;
-        case KILL_AVOIDED:
-         // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-         //prey_not_responded = 1;
-         break;
-        case KILL_CONFIRMED:
-        // nie wiem, czy to ma dostęp do tych zmiennych, trzeba to sprawdzić
-        //my_result = 1;
-        //prey_not_responded = 1;
-            changeState(Killer_won);
-        break;
-        */
         case PARTNER_REQ: 
 			//debug("Dostałem PARTNER_REQ od %d", status.MPI_SOURCE);
 			sendPacket( 0, status.MPI_SOURCE, PAIRING_ACK);
@@ -98,16 +73,20 @@ void *startKomWatek(void *ptr)
             //debug("ile mi zaakceptowalo %d", ACKcount);
             if(ACKcount == size - 1)
             {
-                ACKcount = 0;
+                ACKcount = -1;
                 placement = position(pairingQueue, rank);
                 if(placement % 2 == 1)
                 {
                     myrole = KILLER;
                     partnerID = pairingQueue[placement - 1].second;
-                    response->data = partnerID;
+                    //response->data = partnerID;
                     //Pair runner and killer
-                    sendPacket(response, partnerID, YOU_ARE_RUNNER);
-                    broadcast(response, REMOVE_FROM_PAIRING_QUEUE);
+                    sendPacket(0, partnerID, YOU_ARE_RUNNER);
+                }
+                else
+                {
+                    haveme = true;
+                    debug("completed");
                 }
             }
             pthread_mutex_unlock(&ACK_mutex);
@@ -115,39 +94,87 @@ void *startKomWatek(void *ptr)
         case YOU_ARE_RUNNER:
             myrole = RUNNER;
             partnerID = pakiet.src;
+            if(haveme == false)
+            {
+                sendPacket(0, partnerID, WAIT);
+            }
+            else
+            {
+                haveme = false;
+                sendPacket(0, partnerID, YOU_ARE_KILLER);
+            }
             break;
         case YOU_ARE_KILLER: //Probably never used, since killer initializes pairing
             myrole = KILLER;
             partnerID = pakiet.src;
+            broadcast(0, REMOVE_FROM_PAIRING_QUEUE);
+            break;
+        case WAIT:
+            sendPacket(0, partnerID, YOU_ARE_RUNNER);
             break;
         case REMOVE_FROM_PAIRING_QUEUE:
             debug("%d prosi o usuniecie z kolejki siebie i jeszcze partnera %d", pakiet.src, pakiet.data);
+            displayQUEUE(pairingQueue);
             placement = position(pairingQueue, pakiet.src);
             pairingQueue.erase(pairingQueue.begin() + placement - 1, pairingQueue.begin() + placement + 1);
+            debug("PO USUNIECIU");
             displayQUEUE(pairingQueue);
             break;
         case GUN_REQ:
-            if(stan!= Pistol_Requested && stan != Shooting) {
-                // zaakceptuj, że ktoś bierze
-                res->data = 0;
-                sendPacket(res, pakiet.src, GUN_ACC);
-                //pthread_mutex_unlock(&pistol_mutex);
+            //debug("Dostałem GUN_REQ od %d", status.MPI_SOURCE);
+			sendPacket( 0, status.MPI_SOURCE, PAIRING_ACK);
+			while(placement < gunQueue.size())
+            {
+				if(gunQueue[placement].first > pakiet.ts ||
+                (gunQueue[placement].first == pakiet.ts && gunQueue[placement].second > status.MPI_SOURCE))
+					break;
+                placement++;
             }
-            else{
-                //kolejka_do_odpowiedzi_na_pistolet[ile_requestow_po_pistolet] = pakiet.src;
-                //ile_requestow_po_pistolet += 1;
+			gunQueue.insert(gunQueue.begin() + placement, std::make_pair(pakiet.ts, status.MPI_SOURCE));
+		    break;
+        case GUN_ACK:
+            //debug("Dostałem GUN_ACK od %d", status.MPI_SOURCE);
+            pthread_mutex_lock(&ACK_mutex);
+            ACKcount++;
+            //debug("ile mi zaakceptowalo %d", ACKcount);
+            if(ACKcount == size - 1)
+            {
+                ACKcount = 0;
+                placement = position(pairingQueue, rank);
+                if(placement % 2 == 1)
+                {
+                    myrole = KILLER;
+                    partnerID = pairingQueue[placement - 1].second;
+                    //response->data = partnerID;
+                    //Pair runner and killer
+                    sendPacket(0, partnerID, YOU_ARE_RUNNER);
+                    broadcast(0, REMOVE_FROM_PAIRING_QUEUE);
+                }
             }
-            break;
-        case GUN_ACC:
-                //todo
-
-                break;
-        case REMOVE_FROM_GUN_QUEUE:
-            debug("%d prosi o usuniecie z kolejki siebie ", pakiet.src);
-            placement = position(gunQueue, pakiet.src);
-            gunQueue.erase(gunQueue.begin() + placement, gunQueue.begin() + placement + 1);
-            displayQUEUE(gunQueue);
-            break;
+            pthread_mutex_unlock(&ACK_mutex);
+	        break;
+        case KILL_ATTEMPT:
+            defence = rand()%20;
+            if (defence > pakiet.data)
+            {
+                score++;
+                sendPacket(0, pakiet.src, KILL_AVOIDED);
+            }
+            else
+            {
+                score--;
+                sendPacket(0, pakiet.src, KILL_CONFIRMED);
+            }
+            roundsfinished++;
+        break;
+        case KILL_AVOIDED:
+            score--;
+            roundsfinished++;
+        break;
+        case KILL_CONFIRMED:
+            score++;
+            roundsfinished++;
+        break;
 	    default:
             debug("Nieznany typ wiadomosci! %d , %d, %d ",pakiet.src, pakiet.data, status.MPI_TAG);
 	    break;

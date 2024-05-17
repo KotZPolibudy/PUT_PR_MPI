@@ -11,10 +11,16 @@ struct tagNames_t{
                 {"potwierdzam ze mozesz sie parowac", PAIRING_ACK},
                 {"Jestes killerem", YOU_ARE_KILLER},
                 {"Jestes runnerem", YOU_ARE_RUNNER},
-                {"Usun z kolejki do parowania", REMOVE_FROM_PAIRING_QUEUE}
+                {"Usun z kolejki do parowania", REMOVE_FROM_PAIRING_QUEUE},
+                {"Chce pistolet", GUN_REQ},
+                {"Potwierdzam pistolet", GUN_ACK},
+                {"Proba zabojstwa", KILL_ATTEMPT},
+                {"Nieudany kill", KILL_AVOIDED},
+                {"Udany kill", KILL_CONFIRMED},
+                {"Jeszcze mnie nie maja wszyscy", WAIT}
 };
 
-state_t stan=InRun;
+state_t stan=FREE;
 
 const char *const tag2string( int tag )
 {
@@ -63,7 +69,7 @@ void sendPacket(packet_t *pkt, int destination, int tag)
 void changeState( state_t newState )
 {
     pthread_mutex_lock( &state_mutex );
-    if (stan==InFinish) { 
+    if (stan==FINISH) { 
 	pthread_mutex_unlock( &state_mutex );
         return;
     }

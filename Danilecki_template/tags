@@ -9,26 +9,22 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	//
-A	watek_glowny.cpp	/^int A = 3;$/;"	v	typeref:typename:int
 ACK_mutex	main.cpp	/^pthread_mutex_t ACK_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
 ACKcount	main.cpp	/^int ACKcount = 0;$/;"	v	typeref:typename:int
 APP_PKT	util.h	/^#define APP_PKT /;"	d
 C	watek_glowny.cpp	/^int C = 3;$/;"	v	typeref:typename:int
 FALSE	main.h	/^#define FALSE /;"	d
 FINISH	util.h	/^#define FINISH /;"	d
+FINISHED	util.h	/^typedef enum {FREE, REQUESTING, FINISHED} state_t;$/;"	e	enum:__anon213916590103
 FLAGS	Makefile	/^FLAGS=-DDEBUG -g$/;"	m
-Finished	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
+FREE	util.h	/^typedef enum {FREE, REQUESTING, FINISHED} state_t;$/;"	e	enum:__anon213916590103
+GUN_ACK	util.h	/^#define GUN_ACK /;"	d
+GUN_REQ	util.h	/^#define GUN_REQ /;"	d
 HEADERS	Makefile	/^HEADERS=$(SOURCES:.cpp=.h)$/;"	m
-InFinish	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-InMonitor	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-InRun	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-InSend	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
 KILLER	util.h	/^#define KILLER /;"	d
 KILL_ATTEMPT	util.h	/^#define KILL_ATTEMPT /;"	d
 KILL_AVOIDED	util.h	/^#define KILL_AVOIDED /;"	d
 KILL_CONFIRMED	util.h	/^#define KILL_CONFIRMED /;"	d
-Killer	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-Killer_won	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
 LamportClock	main.cpp	/^int LamportClock = 0;$/;"	v	typeref:typename:int
 MAINH	main.h	/^#define MAINH$/;"	d
 MPI_PAKIET_T	util.cpp	/^MPI_Datatype MPI_PAKIET_T;$/;"	v	typeref:typename:MPI_Datatype
@@ -36,31 +32,25 @@ NITEMS	packet.h	/^#define NITEMS /;"	d
 P	watek_glowny.cpp	/^int P = 5;$/;"	v	typeref:typename:int
 PAIRING_ACK	util.h	/^#define PAIRING_ACK /;"	d
 PARTNER_REQ	util.h	/^#define PARTNER_REQ /;"	d
-PISTOL_ACC	util.h	/^#define PISTOL_ACC /;"	d
-PISTOL_REQ	util.h	/^#define PISTOL_REQ /;"	d
 PUT_PR_MPI_PACKET_H	packet.h	/^#define PUT_PR_MPI_PACKET_H$/;"	d
-Partner_requested	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-Pistol_Requested	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-Przegrane	watek_glowny.cpp	/^int Wygrane = 0, Przegrane =0;$/;"	v	typeref:typename:int
 REMOVE_FROM_GUN_QUEUE	util.h	/^#define REMOVE_FROM_GUN_QUEUE /;"	d
 REMOVE_FROM_PAIRING_QUEUE	util.h	/^#define REMOVE_FROM_PAIRING_QUEUE /;"	d
+REQUESTING	util.h	/^typedef enum {FREE, REQUESTING, FINISHED} state_t;$/;"	e	enum:__anon213916590103
 ROOT	main.h	/^#define ROOT /;"	d
 RUNNER	util.h	/^#define RUNNER /;"	d
-Runner	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
 SEC_IN_STATE	main.h	/^#define SEC_IN_STATE /;"	d
 SOURCES	Makefile	/^SOURCES=$(wildcard *.cpp)$/;"	m
 STATE_CHANGE_PROB	main.h	/^#define STATE_CHANGE_PROB /;"	d
-Shooting	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
-SupportsPairing	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	e	enum:__anon213916590103
 TRUE	main.h	/^#define TRUE /;"	d
 UTILH	util.h	/^#define UTILH$/;"	d
+WAIT	util.h	/^#define WAIT /;"	d
 WATEK_GLOWNY_H	watek_glowny.h	/^#define WATEK_GLOWNY_H$/;"	d
 WATEK_KOMUNIKACYJNY_H	watek_komunikacyjny.h	/^#define WATEK_KOMUNIKACYJNY_H$/;"	d
-Wygrane	watek_glowny.cpp	/^int Wygrane = 0, Przegrane =0;$/;"	v	typeref:typename:int
 YOU_ARE_KILLER	util.h	/^#define YOU_ARE_KILLER /;"	d
 YOU_ARE_RUNNER	util.h	/^#define YOU_ARE_RUNNER /;"	d
-__anon213916590103	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	g
+__anon213916590103	util.h	/^typedef enum {FREE, REQUESTING, FINISHED} state_t;$/;"	g
 __anonf209bbd30108	packet.h	/^typedef struct {$/;"	s
+acquire_partner	watek_glowny.cpp	/^void acquire_partner()$/;"	f	typeref:typename:void
 all	Makefile	/^all: main tags$/;"	t
 broadcast	util.cpp	/^void broadcast(packet_t *pkt, int tag)$/;"	f	typeref:typename:void
 changeState	util.cpp	/^void changeState( state_t newState )$/;"	f	typeref:typename:void
@@ -71,41 +61,35 @@ clock_mutex	main.cpp	/^pthread_mutex_t clock_mutex = PTHREAD_MUTEX_INITIALIZER;$
 data	packet.h	/^    int data;     \/* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą /;"	m	struct:__anonf209bbd30108	typeref:typename:int
 debug	main.h	/^#define debug(/;"	d
 displayQUEUE	watek_komunikacyjny.cpp	/^void displayQUEUE(std::vector<std::pair<int, int>> queue)$/;"	f	typeref:typename:void
-do_nothing_basically	watek_glowny.cpp	/^void do_nothing_basically(){$/;"	f	typeref:typename:void
 finalizuj	main.cpp	/^void finalizuj()$/;"	f	typeref:typename:void
-get_pistol	watek_glowny.cpp	/^void get_pistol(){$/;"	f	typeref:typename:void
-ile_requestow_po_pistolet	watek_glowny.cpp	/^int ile_requestow_po_pistolet = 0;$/;"	v	typeref:typename:int
+get_pistol	watek_glowny.cpp	/^void get_pistol()$/;"	f	typeref:typename:void
+haveme	watek_glowny.cpp	/^bool haveme;$/;"	v	typeref:typename:bool
 inicjuj_typ_pakietu	util.cpp	/^void inicjuj_typ_pakietu()$/;"	f	typeref:typename:void
 iteration	watek_glowny.cpp	/^int iteration = 0;$/;"	v	typeref:typename:int
-kolejka_do_odpowiedzi_na_pistolet	watek_glowny.cpp	/^int* kolejka_do_odpowiedzi_na_pistolet;$/;"	v	typeref:typename:int *
+killing	watek_glowny.cpp	/^void killing()$/;"	f	typeref:typename:void
 main	Makefile	/^main: $(SOURCES) $(HEADERS) Makefile$/;"	t
 main	main.cpp	/^int main(int argc, char **argv)$/;"	f	typeref:typename:int
 mainLoop	watek_glowny.cpp	/^void mainLoop()$/;"	f	typeref:typename:void
-my_result	watek_glowny.cpp	/^int my_result;$/;"	v	typeref:typename:int
 myrole	watek_glowny.cpp	/^int myrole = -1;$/;"	v	typeref:typename:int
 name	util.cpp	/^    const char *name;$/;"	m	struct:tagNames_t	typeref:typename:const char *	file:
 packet_t	packet.h	/^} packet_t;$/;"	t	typeref:struct:__anonf209bbd30108
 partnerID	watek_glowny.cpp	/^int partnerID = -1;$/;"	v	typeref:typename:int
-partner_mutex	main.cpp	/^pthread_mutex_t partner_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
-pistolREQ_res	watek_glowny.cpp	/^int pistolREQ_res = 1; \/\/ start with yourself!$/;"	v	typeref:typename:int
-pistol_mutex	main.cpp	/^pthread_mutex_t pistol_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
 position	watek_komunikacyjny.cpp	/^int position(std::vector<std::pair<int, int>> queue, int who)$/;"	f	typeref:typename:int
-prey_not_responded	watek_glowny.cpp	/^int prey_not_responded = 1;$/;"	v	typeref:typename:int
 println	main.h	/^#define println(/;"	d
 queue_mutex	main.cpp	/^pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
 rank	main.cpp	/^int rank = 0, size; \/\/ rank == MyPID , size == WORLD_SIZE$/;"	v	typeref:typename:int
-received_friendship_response	watek_glowny.cpp	/^int received_friendship_response = 1; \/\/ start with yourself!$/;"	v	typeref:typename:int
 release_pistol	watek_glowny.cpp	/^void release_pistol(){$/;"	f	typeref:typename:void
-result	watek_glowny.cpp	/^int result;$/;"	v	typeref:typename:int
+roundsfinished	watek_glowny.cpp	/^int roundsfinished = 0;$/;"	v	typeref:typename:int
 run	Makefile	/^run: main Makefile tags$/;"	t
+score	watek_glowny.cpp	/^int score=0;$/;"	v	typeref:typename:int
 sendPacket	util.cpp	/^void sendPacket(packet_t *pkt, int destination, int tag)$/;"	f	typeref:typename:void
-shots_fired	watek_glowny.cpp	/^int shots_fired = 0;$/;"	v	typeref:typename:int
 size	main.cpp	/^int rank = 0, size; \/\/ rank == MyPID , size == WORLD_SIZE$/;"	v	typeref:typename:int
+sleep	watek_glowny.cpp	/^void sleep(double seconds)$/;"	f	typeref:typename:void
 src	packet.h	/^    int src;$/;"	m	struct:__anonf209bbd30108	typeref:typename:int
-stan	util.cpp	/^state_t stan=InRun;$/;"	v	typeref:typename:state_t
+stan	util.cpp	/^state_t stan=FREE;$/;"	v	typeref:typename:state_t
 startKomWatek	watek_komunikacyjny.cpp	/^void *startKomWatek(void *ptr)$/;"	f	typeref:typename:void *
 state_mutex	main.cpp	/^pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v	typeref:typename:pthread_mutex_t
-state_t	util.h	/^typedef enum {InRun, InMonitor, InSend, InFinish, SupportsPairing, Partner_requested, Killer, Ru/;"	t	typeref:enum:__anon213916590103
+state_t	util.h	/^typedef enum {FREE, REQUESTING, FINISHED} state_t;$/;"	t	typeref:enum:__anon213916590103
 tag	util.cpp	/^    int tag;$/;"	m	struct:tagNames_t	typeref:typename:int	file:
 tag2string	util.cpp	/^const char *const tag2string( int tag )$/;"	f	typeref:typename:const char * const
 tagNames	util.cpp	/^} tagNames[] = {{"pakiet aplikacyjny", APP_PKT },$/;"	v	typeref:struct:tagNames_t[]
@@ -114,7 +98,4 @@ tags	Makefile	/^tags: ${SOURCES} ${HEADERS}$/;"	t
 threadKom	main.cpp	/^pthread_t threadKom, threadMon;$/;"	v	typeref:typename:pthread_t
 threadMon	main.cpp	/^pthread_t threadKom, threadMon;$/;"	v	typeref:typename:pthread_t
 tick_Lamport_clock	util.cpp	/^void tick_Lamport_clock(int nowy)$/;"	f	typeref:typename:void
-try_killing	watek_glowny.cpp	/^void try_killing(){$/;"	f	typeref:typename:void
 ts	packet.h	/^    int ts;       \/* timestamp (zegar lamporta) *\/$/;"	m	struct:__anonf209bbd30108	typeref:typename:int
-waiting	watek_glowny.cpp	/^int waiting = -1;$/;"	v	typeref:typename:int
-want_partner	watek_glowny.cpp	/^void want_partner()$/;"	f	typeref:typename:void

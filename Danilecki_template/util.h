@@ -18,7 +18,8 @@
 #define YOU_ARE_KILLER 22
 #define YOU_ARE_RUNNER 23
 #define GUN_REQ 33
-#define GUN_ACC 34
+#define GUN_ACK 34
+#define WAIT 50
 #define REMOVE_FROM_PAIRING_QUEUE 100
 #define REMOVE_FROM_GUN_QUEUE 101
 
