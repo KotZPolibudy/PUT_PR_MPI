@@ -63,7 +63,7 @@ void sendPacket(packet_t *pkt, int destination, int tag)
     pkt->ts = LamportClock;
     MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
     pthread_mutex_unlock(&clock_mutex);
-    debug("Wysyłam %s do %d w czasie %d\n", tag2string( tag), destination, pkt->ts);
+    //debug("Wysyłam %s do %d w czasie %d\n", tag2string( tag), destination, pkt->ts);
     if (freepkt) free(pkt);
 }
 
@@ -103,7 +103,7 @@ void broadcast(packet_t *pkt, int tag)
         MPI_Send( pkt, 1, MPI_PAKIET_T, j, tag, MPI_COMM_WORLD);
     }
     pthread_mutex_unlock(&clock_mutex);
-    debug("Wysyłam Grupowo %s w czasie %d\n", tag2string(tag), pkt->ts);
+    //debug("Wysyłam Grupowo %s w czasie %d\n", tag2string(tag), pkt->ts);
     if (freepkt) free(pkt);
 }
 

@@ -86,7 +86,6 @@ void *startKomWatek(void *ptr)
                 else
                 {
                     haveme = true;
-                    debug("completed");
                 }
             }
             pthread_mutex_unlock(&ACK_mutex);
