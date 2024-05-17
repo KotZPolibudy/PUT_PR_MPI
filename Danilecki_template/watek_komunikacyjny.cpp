@@ -125,7 +125,7 @@ void *startKomWatek(void *ptr)
             placement = position(gunQueue, pakiet.src);
             gunQueue.erase(gunQueue.begin() + placement, gunQueue.begin() + placement + 1);
             placement = position(gunQueue, rank);
-            if(placement < size - P)
+            if(placement < P && haveme == true)
             {
                 havegun = true;
             }
@@ -153,8 +153,8 @@ void *startKomWatek(void *ptr)
             {
                 ACKcount = -1;
                 haveme = true;
-                placement = position(pairingQueue, rank);
-                if(placement < size - P)
+                placement = position(gunQueue, rank);
+                if(placement < P)
                 {
                     havegun = true;
                 }
