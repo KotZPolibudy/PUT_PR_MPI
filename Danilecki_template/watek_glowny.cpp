@@ -14,6 +14,7 @@ int iteration = 0;
 int score=0;
 int roundsfinished = 0;
 bool haveme;
+bool havegun;
 
 // Need someone to kill or get killed
 void acquire_partner()
@@ -38,7 +39,9 @@ void acquire_partner()
 
 void release_pistol(){
     changeState(FREE);
-    broadcast(0, GUN_ACK);
+    havegun = false;
+    haveme = false;
+    broadcast(0, REMOVE_FROM_GUN_QUEUE);
 };
 
 
@@ -46,10 +49,10 @@ void get_pistol()
 {
     changeState(REQUESTING);
     pthread_mutex_lock(&ACK_mutex);
-    ACKcount = 0;
+    ACKcount = -1;
     broadcast(0, GUN_REQ);
     pthread_mutex_unlock(&ACK_mutex);
-    while(ACKcount < size - P);
+    while(!havegun);
 }
 
 
@@ -60,6 +63,7 @@ void killing()
     packet_t *pkt = (packet_t *)malloc(sizeof(packet_t));
     pkt->data = attack;
     sendPacket(pkt, partnerID, KILL_ATTEMPT);
+    free(pkt);
     release_pistol();
 }
 
@@ -85,13 +89,14 @@ void mainLoop()
         score = 0;
         roundsfinished = 0;
         haveme = false;
+        havegun = false;
         changeState(FREE);
         //get a partner
         acquire_partner();
         //sleep(9.0); //wait to see fesults in a similar place
         debug("My partner is: %d", partnerID);
         sleep(1.0);
-        continue;
+        //continue;
         for (int current_cycle = 0; current_cycle < C; current_cycle++)
         {
             //Obtain results
@@ -117,6 +122,7 @@ void mainLoop()
                 debug("KILLER %d tied against RUNNER %d", rank, partnerID);
             }
         }
+        sleep(5.0);
         //Start new round
     }
 }

@@ -113,16 +113,29 @@ void *startKomWatek(void *ptr)
             sendPacket(0, partnerID, YOU_ARE_RUNNER);
             break;
         case REMOVE_FROM_PAIRING_QUEUE:
-            debug("%d prosi o usuniecie z kolejki siebie i jeszcze partnera %d", pakiet.src, pakiet.data);
-            displayQUEUE(pairingQueue);
+            //debug("%d prosi o usuniecie z kolejki siebie i jeszcze partnera %d", pakiet.src, pakiet.data);
+            //displayQUEUE(pairingQueue);
             placement = position(pairingQueue, pakiet.src);
             pairingQueue.erase(pairingQueue.begin() + placement - 1, pairingQueue.begin() + placement + 1);
-            debug("PO USUNIECIU");
-            displayQUEUE(pairingQueue);
+            //debug("PO USUNIECIU");
+            //displayQUEUE(pairingQueue);
+            break;
+        case REMOVE_FROM_GUN_QUEUE:
+            //debug("%d prosi o usuniecie z kolejki PISTOLETOWEJ siebie", pakiet.src);
+            //displayQUEUE(pairingQueue);
+            placement = position(gunQueue, pakiet.src);
+            gunQueue.erase(gunQueue.begin() + placement, gunQueue.begin() + placement + 1);
+            placement = position(gunQueue, rank);
+            if(placement < size - P)
+            {
+                havegun = true;
+            }
+            //debug("PO USUNIECIU");
+            //displayQUEUE(pairingQueue);
             break;
         case GUN_REQ:
             //debug("Dostałem GUN_REQ od %d", status.MPI_SOURCE);
-			sendPacket( 0, status.MPI_SOURCE, PAIRING_ACK);
+			sendPacket( 0, status.MPI_SOURCE, GUN_ACK);
 			while(placement < gunQueue.size())
             {
 				if(gunQueue[placement].first > pakiet.ts ||
@@ -139,16 +152,12 @@ void *startKomWatek(void *ptr)
             //debug("ile mi zaakceptowalo %d", ACKcount);
             if(ACKcount == size - 1)
             {
-                ACKcount = 0;
+                ACKcount = -1;
+                haveme = true;
                 placement = position(pairingQueue, rank);
-                if(placement % 2 == 1)
+                if(placement < size - P)
                 {
-                    myrole = KILLER;
-                    partnerID = pairingQueue[placement - 1].second;
-                    //response->data = partnerID;
-                    //Pair runner and killer
-                    sendPacket(0, partnerID, YOU_ARE_RUNNER);
-                    broadcast(0, REMOVE_FROM_PAIRING_QUEUE);
+                    havegun = true;
                 }
             }
             pthread_mutex_unlock(&ACK_mutex);

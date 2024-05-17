@@ -63,6 +63,7 @@ debug	main.h	/^#define debug(/;"	d
 displayQUEUE	watek_komunikacyjny.cpp	/^void displayQUEUE(std::vector<std::pair<int, int>> queue)$/;"	f	typeref:typename:void
 finalizuj	main.cpp	/^void finalizuj()$/;"	f	typeref:typename:void
 get_pistol	watek_glowny.cpp	/^void get_pistol()$/;"	f	typeref:typename:void
+havegun	watek_glowny.cpp	/^bool havegun;$/;"	v	typeref:typename:bool
 haveme	watek_glowny.cpp	/^bool haveme;$/;"	v	typeref:typename:bool
 inicjuj_typ_pakietu	util.cpp	/^void inicjuj_typ_pakietu()$/;"	f	typeref:typename:void
 iteration	watek_glowny.cpp	/^int iteration = 0;$/;"	v	typeref:typename:int

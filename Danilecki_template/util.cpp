@@ -12,6 +12,7 @@ struct tagNames_t{
                 {"Jestes killerem", YOU_ARE_KILLER},
                 {"Jestes runnerem", YOU_ARE_RUNNER},
                 {"Usun z kolejki do parowania", REMOVE_FROM_PAIRING_QUEUE},
+                {"Usun z kolejki do pistoletow", REMOVE_FROM_GUN_QUEUE},
                 {"Chce pistolet", GUN_REQ},
                 {"Potwierdzam pistolet", GUN_ACK},
                 {"Proba zabojstwa", KILL_ATTEMPT},

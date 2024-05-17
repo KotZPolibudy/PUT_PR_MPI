@@ -32,6 +32,7 @@ extern pthread_mutex_t clock_mutex;
 extern pthread_mutex_t ACK_mutex;
 extern int ACKcount;
 extern bool haveme;
+extern bool havegun;
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta 
